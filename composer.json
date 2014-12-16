@@ -1,0 +1,16 @@
+{
+    "name": "watzenare/PushApi_Client",
+    "type": "library",
+    "description": "A PHP standalone client that facilitates to developers the use of all the PushApi functionalities",
+	"keywords": ["pushapi","php-push", "pushapi-php"],
+    "license": "MIT",
+	"authors": [
+		{
+			"name": "Eloi Ballarà",
+			"email": "eloi@tviso.com"
+		}
+	],
+    "require": {
+        "php": ">=5.5",
+    }
+}
