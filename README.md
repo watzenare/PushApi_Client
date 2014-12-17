@@ -1,19 +1,13 @@
 # PushApi_Client
 
-[![Analytics](https://ga-beacon.appspot.com/UA-57718174-1/pushapi/readme?pixel)](https://github.com/watzenare/PushApi_Client)
+[![Latest Stable Version](https://poser.pugx.org/pushapi/client-php/v/stable.svg)](https://packagist.org/packages/pushapi/client-php)
+[![License](https://poser.pugx.org/pushapi/client-php/license.svg)](https://packagist.org/packages/pushapi/client-php)
 
-## Introduction
+## Install [![Analytics](https://ga-beacon.appspot.com/UA-57718174-1/pushapi/readme?pixel)](https://github.com/watzenare/PushApi_Client)
 
-A PHP standalone client that facilitates to developers the use of all the functionalities of the PushApi.
+You can easily install the PushApi_Client using Composer.
 
-
-## Install
-
-You can install the PushApi_Client with Composer or Manually.
-
-### Composer
-
-In your composer.json file just add the latest stable version of the client (see versions on [Packagist](https://packagist.org/packages/pushapi/client-php)):
+In your composer.json file just add the latest stable version of the Client (see versions on [Packagist](https://packagist.org/packages/pushapi/client-php)):
 
     {
         "require": {
@@ -21,23 +15,12 @@ In your composer.json file just add the latest stable version of the client (see
         }
     }
 
-### Manually
-
-Clone the project and add it in your project folder:
-
-    $ cd path/to/your/project/pushapi_client
-    
-Require the Client in your PHP file:
-
-```php
-require "PushApi_Client/PushApi_Client.php";
-```
-
 
 ## Requirements
 
+- Have a basic knowledge about what the [PushApi](https://github.com/watzenare/PushApi) does and its functionalities
+- [PushApi](https://github.com/watzenare/PushApi) running on server
 - PHP >= 5.5
-- Have a basic knowledge about what the PushApi does and its functionalities
 
 
 ## Example Usage
@@ -68,5 +51,12 @@ Also I will be grateful if you want to make a donation, this project hasn't got 
 ##License
 
 The PushApi_Client is released under the MIT public license.
+
+
+## Possible changes
+
+- Tests
+- Change the cURL function and get cUrl response to [Guzzle](https://github.com/guzzle/guzzle) or something like it.
+
 
 Thank you!

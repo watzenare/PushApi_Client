@@ -53,7 +53,7 @@ class PushApiException extends Exception
  * @method getUserPreference($idUser, $idTheme)             Gets the specific $idUser preference given a specific $idTheme
  * @method createUserPreference($idUser, $idTheme, $params) Sets a preference to a specific $idUser from a specific $idTheme given $params information
  * @method updateUserPreference($idUser, $idTheme, $params) Updates a specific $idTheme preference from a specific $idUser given its $params
- * @methodUnsets a specific $idUser preference from a specific $idThemence($idUser, $idTheme)          Unsets a specific $idUser preference from a specific $idTheme
+ * @method deleteUserPreference($idUser, $idTheme)          Unsets a specific $idUser preference from a specific $idTheme
  * @method getUserPreferences($idUser)                      Retrieves information about all $idUser preferences
  *
  * Channel:
