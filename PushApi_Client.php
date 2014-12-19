@@ -14,18 +14,8 @@
  *
  * @author Eloi Ballarà Madrid <eloi@tviso.com>
  * @license http://www.opensource.org/licenses/mit-license.php The MIT License
- * @package PushApi_Client
- */
-
-/**
- * Custom Exception for handling PushApi Exceptions, it is only thrown when the API fails.
- */
-class PushApiException extends Exception
-{
-    
-}
-
-/**
+ *
+ *
  * A PHP standalone client that facilitates to developers the use of all the PushApi functionalities.
  *
  * Warning: when a call need @param $params, this params must be send in an array and each key name must
@@ -92,17 +82,9 @@ class PushApi_Client
     const DELETE = "DELETE";
 
     /**
-     * HTTP headers and content
+     * Exception code from the RequestManager
      */
-    const HEADER_APP_ID = 'X-App-Id: ';
-    const HEADER_APP_AUTH = 'X-App-Auth: ';
-    const HEADER_CONTENT_TYPE = 'Content-Type: ';
-    const X_WWW_FORM_URLENCODED = 'application/x-www-form-urlencoded';
-
-    /**
-     * HTTP response codes
-     */
-    const HTTP_RESPONSE_OK = 200;
+    const REQUEST_MANAGER_EXCEPTION = -2;
 
     /**
      * Agent app identification
@@ -128,44 +110,29 @@ class PushApi_Client
      */
     private $appAuth;
 
-    /**
-     * The host where the API is running
-     * @var string
-     */
-    private $baseUrl;
-
-    /**
-     * The port where the API is running
-     * @var integer
-     */
-    private $port;
-
-    /**
-     * Displays the data sent/received to/from the server
-     * @var bool
-     */
-    private $verbose = false;
 
     /**
      * Creates a PushApi client that contains all the necessary calls in order to use
      * easily the API. It is required to have created an app before to use de client
      * because it is needed in order to be authenticated toward the PushApi.
-     * It is also needed the $host {@link $baseUrl} and port {@link $port}.
+     *
      * @param [integer] $appId     App identification
      * @param [string]  $appName   App name
      * @param [string]  $appSecret App secret
-     * @param [string]  $baseUrl   The host where the API is running
-     * @param [integer] $port      The port where the API is running
+     * @param [RequestManager] $requestManager An instance of any RequestManager class
      */
-    function __construct($appId, $appName, $appSecret, $baseUrl, $port)
+    function __construct($appId, $appName, $appSecret, $requestManager)
     {
+        // Setting Client private vars
         $this->setAppId($appId);
         $this->setAppName($appName);
         $this->setAppSecret($appSecret);
-        $this->setBaseUrl($baseUrl);
-        $this->setPort($port);
-
+        $this->setRequestManager($requestManager);
+        // Generating the app auth given authentication params
         $this->generateAuth();
+        // Setting RequestManager header app params
+        $this->requestManager->setAppId($appId);
+        $this->requestManager->setAppAuth($this->getAppAuth());
     }
 
 
@@ -228,42 +195,6 @@ class PushApi_Client
     }
 
     /**
-     * Sets the base url
-     * @param [string] $url
-     */
-    public function setBaseUrl($url)
-    {
-        $this->baseUrl = $url;
-    }
-
-    /**
-     * Returns the base url
-     * @return [string]
-     */
-    public function getBaseUrl()
-    {
-        return $this->baseUrl;
-    }
-
-    /**
-     * Sets the port
-     * @param [integer] $port
-     */
-    public function setPort($port)
-    {
-        $this->port = $port;
-    }
-
-    /**
-     * Returns the port
-     * @return [integer]
-     */
-    public function getPort()
-    {
-        return $this->port;
-    }
-
-    /**
      * Returns the app auth
      * @return [string]
      */
@@ -283,25 +214,25 @@ class PushApi_Client
         if (!isset($this->appName) && !isset($this->appSecret)) {
             throw new Exception("Basic class data not set, expected appName and appSecret", -1);
         }
-        $this->appAuth = md5($this->appName . date('Y-m-d') . $this->appSecret);
+        $this->appAuth = md5($this->appName . date("Y-m-d") . $this->appSecret);
     }
 
     /**
-     * Sets the verbose
-     * @param [boolean] $verbose
+     * Sets an instance of a class type RequestManager
+     * @param [RequestManager] $requestManager 
      */
-    public function setVerbose($verbose)
+    private function setRequestManager($requestManager)
     {
-        $this->verbose = $verbose;
+        $this->requestManager = $requestManager;
     }
 
     /**
-     * Returns the app auth
-     * @return [boolean]
+     * Gets an instance of a class type RequestManager
+     * @return [RequestManager]
      */
-    public function getVerbose()
+    private function getRequestManager()
     {
-        return $this->verbose;
+        return $this->requestManager;
     }
 
 
@@ -394,7 +325,7 @@ class PushApi_Client
      */
     public function createUsers($params)
     {
-        return $this->users(self::POST, 0, $params);
+        return $this->users(self::POST, $params);
     }
 
 
@@ -724,10 +655,15 @@ class PushApi_Client
         }
 
         $url = "app/$idApp";
-        if (empty($params) && $method == self::PUT) {
-            return $this->sendRequest($method, $url, $params);
+        $request = $this->getRequestManager();
+        try {
+            if (empty($params) && $method == self::PUT) {
+                return $request->sendRequest($method, $url, $params);
+            }
+            return $request->sendRequest($method, $url);
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), $e->getCode());
         }
-        return $this->sendRequest($method, $url);
     }
 
     /**
@@ -754,11 +690,16 @@ class PushApi_Client
         }
 
         $url = "user";
-        if ($method == self::POST) {
-            return $this->sendRequest($method, $url, $params);
+        $request = $this->getRequestManager();
+        try {
+            if ($method == self::POST) {
+                return $request->sendRequest($method, $url, $params);
+            }
+            $url .= "/$idUser";
+            return $request->sendRequest($method, $url, $params);
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), $e->getCode());
         }
-        $url .= "/$idUser";
-        return $this->sendRequest($method, $url, $params);
     }
 
     /**
@@ -783,10 +724,15 @@ class PushApi_Client
         }
 
         $url = "users";
-        if ($method == self::POST) {
-            return $this->sendRequest($method, $url, $params);
+        $request = $this->getRequestManager();
+        try {
+            if ($method == self::POST) {
+                return $request->sendRequest($method, $url, $params);
+            }
+            return $request->sendRequest($method, $url);
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), $e->getCode());
         }
-        return $this->sendRequest($method, $url);
     }
 
     /**
@@ -812,11 +758,16 @@ class PushApi_Client
         }
 
         $url = "channel";
-        if ($method == self::POST) {
-            return $this->sendRequest($method, $url, $params);
+        $request = $this->getRequestManager();
+        try {
+            if ($method == self::POST) {
+                return $request->sendRequest($method, $url, $params);
+            }
+            $url .= "/$idChannel";
+            return $request->sendRequest($method, $url, $params);
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), $e->getCode());
         }
-        $url .= "/$idChannel";
-        return $this->sendRequest($method, $url, $params);
     }
 
     /**
@@ -833,7 +784,12 @@ class PushApi_Client
         }
 
         $url = "channels";
-        return $this->sendRequest($method, $url);
+        $request = $this->getRequestManager();
+        try {
+            return $request->sendRequest($method, $url);
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), $e->getCode());
+        }
     }
 
     /**
@@ -859,11 +815,16 @@ class PushApi_Client
         }
 
         $url = "theme";
-        if ($method == self::POST) {
-            return $this->sendRequest($method, $url, $params);
+        $request = $this->getRequestManager();
+        try {
+            if ($method == self::POST) {
+                return $request->sendRequest($method, $url, $params);
+            }
+            $url .= "/$idTheme";
+            return $request->sendRequest($method, $url, $params);
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), $e->getCode());
         }
-        $url .= "/$idTheme";
-        return $this->sendRequest($method, $url, $params);
     }
 
     /**
@@ -880,7 +841,12 @@ class PushApi_Client
         }
 
         $url = "themes";
-        return $this->sendRequest($method, $url);
+        $request = $this->getRequestManager();
+        try {
+            return $request->sendRequest($method, $url);
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), $e->getCode());
+        }
     }
 
     /**
@@ -903,7 +869,12 @@ class PushApi_Client
         }
 
         $url = "theme/range/$range";
-        return $this->sendRequest($method, $url);
+        $request = $this->getRequestManager();
+        try {
+            return $request->sendRequest($method, $url);
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), $e->getCode());
+        }
     }
 
     /**
@@ -929,11 +900,16 @@ class PushApi_Client
         }
 
         $url = "subject";
-        if ($method == self::POST) {
-            return $this->sendRequest($method, $url, $params);
+        $request = $this->getRequestManager();
+        try {
+            if ($method == self::POST) {
+                return $request->sendRequest($method, $url, $params);
+            }
+            $url .= "/$idSubject";
+            return $request->sendRequest($method, $url, $params);
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), $e->getCode());
         }
-        $url .= "/$idSubject";
-        return $this->sendRequest($method, $url, $params);
     }
 
     /**
@@ -950,7 +926,12 @@ class PushApi_Client
         }
 
         $url = "subjects";
-        return $this->sendRequest($method, $url);
+        $request = $this->getRequestManager();
+        try {
+            return $request->sendRequest($method, $url);
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), $e->getCode());
+        }
     }
 
     /**
@@ -973,11 +954,16 @@ class PushApi_Client
         }
 
         $url = "user/$idUser/subscribe/$idChannel";
-        if ($method == self::POST) {
-            return $this->sendRequest($method, $url);
+        $request = $this->getRequestManager();
+        try {
+            if ($method == self::POST) {
+                return $request->sendRequest($method, $url);
+            }
+            $url = "user/$idUser/subscribed/$idChannel";
+            return $request->sendRequest($method, $url);
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), $e->getCode());
         }
-        $url = "user/$idUser/subscribed/$idChannel";
-        return $this->sendRequest($method, $url);
     }
 
     /**
@@ -999,7 +985,12 @@ class PushApi_Client
         }
 
         $url = "user/$idUser/subscribed";
-        return $this->sendRequest($method, $url);
+        $request = $this->getRequestManager();
+        try {
+            return $request->sendRequest($method, $url);
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), $e->getCode());
+        }
     }
 
     /**
@@ -1026,10 +1017,15 @@ class PushApi_Client
         }
 
         $url = "user/$idUser/preference/$idTheme";
-        if ($method == self::POST) {
-            return $this->sendRequest($method, $url, $params);
+        $request = $this->getRequestManager();
+        try {
+            if ($method == self::POST) {
+                return $request->sendRequest($method, $url, $params);
+            }
+            return $request->sendRequest($method, $url);
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), $e->getCode());
         }
-        return $this->sendRequest($method, $url);
     }
 
     /**
@@ -1052,7 +1048,12 @@ class PushApi_Client
         }
 
         $url = "user/$idUser/preferences";
-        return $this->sendRequest($method, $url);
+        $request = $this->getRequestManager();
+        try {
+            return $request->sendRequest($method, $url);
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), $e->getCode());
+        }
     }
 
     /**
@@ -1077,97 +1078,11 @@ class PushApi_Client
         }
 
         $url = "send";
-        return $this->sendRequest($method, $url, $params);
-    }
-
-    /**
-     * Sends a call to the PushApi and retrieves the result.
-     * @param  [string] $method HTTP method of the request
-     * @param  [string] $path     [description]
-     * @param  [array] $params Array with the required params as keys (used with PUT && POST mothod)
-     * @return [array] Response key => value array
-     *
-     * @throws [Exception] If [connection failed]
-     */
-    private function sendRequest($method, $path, $params = [])
-    {
-        // Preparing HTTP headers
-        $headers = array(
-            self::HEADER_APP_ID . $this->getAppId(),
-            self::HEADER_APP_AUTH . $this->getAppAuth()
-        );
-
-        // Preparing HTTP connection
-        $ch = curl_init();
- 
-        if ($method == self::POST || $method == self::PUT) {
-            array_push($headers, self::HEADER_CONTENT_TYPE . self::X_WWW_FORM_URLENCODED);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
-        }
-
-        curl_setopt($ch, CURLOPT_URL, $this->getBaseUrl() . $path);
-        curl_setopt($ch, CURLOPT_PORT, $this->getPort());
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-
-        // We want to retrieve returned information
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_VERBOSE, $this->verbose);
-        curl_setopt($ch, CURLOPT_HEADER, true);
- 
-        // Disabling SSL Certificate support temporarly
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-
-        // Getting the raw output
-        $curlResponse = curl_exec($ch);
-        // Getting information about the transfer
-        $curlHeaders = curl_getinfo($ch);
-
-        // Fetching results or failing if doesn't work
-        if ($curlResponse === false) {
-            throw new Exception("Connection failed: " . curl_error($ch), -2);
-        }
- 
-        // Closing the HTTP connection
-        curl_close($ch);
-
-        return $this->parseCurlResponse($curlResponse, $curlHeaders);
-    }
-
-    /**
-     * Parses the HTTP response.
-     * When API throws an error, the description is send via special X HTTP headers and it is displayed into
-     * the raw output. This output must be transformed (string to array) and then it is easier to get the information.
-     * When response is readable, it is searched the body of the response and returned or if an error is returned, it
-     * generates a PushApiException with the error message.
-     * @param  [string] $curlResponse The raw output recived from the cURL
-     * @param  [array] $curlHeaders  Information about the transfer
-     * @return [array] Response key => value array
-     *
-     * @throws [PushApiException] If [PushApi returns fail response]
-     */
-    private function parseCurlResponse($curlResponse, $curlHeaders)
-    {
-        $curlHeadersSize = $curlHeaders['header_size'];
-
-        // Retriving the body from the response. If the body is set it will be placed
-        // following the length of the headers
-        $responseBody = trim(substr($curlResponse, $curlHeadersSize));
-        // Retriving and sorting the headers from the response
-        $headers = explode("\n", trim(substr($curlResponse, 0, $curlHeadersSize)));
-        // First header hasn't a valid content to parse
-        unset($headers[0]);
-        $sortedHeaders = array();
-        foreach($headers as $line) {
-            list($key, $val) = explode(':', $line, 2);
-            $sortedHeaders[$key] = trim($val);
-        }
-        
-        if ($curlHeaders['http_code'] != self::HTTP_RESPONSE_OK) {
-            throw new PushApiException($sortedHeaders['X-Status-Reason'], $curlHeaders['http_code']);
-        } else {
-            return json_decode($responseBody, true);
+        $request = $this->getRequestManager();
+        try {
+            return $request->sendRequest($method, $url, $params);
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), $e->getCode());
         }
     }
 }

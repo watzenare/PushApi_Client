@@ -24,6 +24,9 @@
     "autoload": {
         "classmap": [
             "PushApi_Client.php"
-        ]
+        ],
+        "psr-4": {
+            "RequestManagers\\": "RequestManagers"
+        }
     }
 }
