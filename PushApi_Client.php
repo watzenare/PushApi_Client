@@ -26,65 +26,60 @@
  * @method updateApp($idApp, $params) Updates the information of the specific $idApp
  *
  * User:
- * @method getUser($idUser)             Gets the specific $idUser information
- * @method createUser($params)          Creates an user given $params information
- * @method updateUser($idUser, $params) Updates a specific $idUser given its $params
- * @method deleteUser($idUser)          Deletes an specific $idUser
- * @method getUsers()                   Retrieves information about all registered users
- * @method createUsers($params)         Creates multiple users given its emails
+ * @method getUser($idUser)  Gets the specific $idUser information
+ * @method createUser($params)  Creates an user given $params information
+ * @method updateUser($idUser, $params)  Updates a specific $idUser given its $params
+ * @method deleteUser($idUser)  Deletes an specific $idUser
+ * @method getUsers()  Retrieves information about all registered users
+ * @method createUsers($params)  Creates multiple users given its emails
  *
  * User Subscriptions:
- * @method getUserSubscription($idUser, $idChannel)         Gets the specific $idUser subscription given a specific $idChannel
- * @method createUserSubscription($idUser, $idChannel)      Sets a subscription to a specific $idUser from a specific $idChannel given $params information
- * @method deleteUserSubscription($idUser, $idChannel)      Unsubscribes a specific $idUser from a specific $idChannel
- * @method getUserSubscriptions($idUser)                    Retrieves information about all $idUser subscriptions
+ * @method getUserSubscription($idUser, $idChannel)  Gets the specific $idUser subscription given a specific $idChannel
+ * @method createUserSubscription($idUser, $idChannel)  Sets a subscription to a specific $idUser from a specific $idChannel given $params information
+ * @method deleteUserSubscription($idUser, $idChannel)  Unsubscribes a specific $idUser from a specific $idChannel
+ * @method getUserSubscriptions($idUser)  Retrieves information about all $idUser subscriptions
  *
  * User Preferences:
- * @method getUserPreference($idUser, $idTheme)             Gets the specific $idUser preference given a specific $idTheme
- * @method createUserPreference($idUser, $idTheme, $params) Sets a preference to a specific $idUser from a specific $idTheme given $params information
- * @method updateUserPreference($idUser, $idTheme, $params) Updates a specific $idTheme preference from a specific $idUser given its $params
- * @method deleteUserPreference($idUser, $idTheme)          Unsets a specific $idUser preference from a specific $idTheme
- * @method getUserPreferences($idUser)                      Retrieves information about all $idUser preferences
+ * @method getUserPreference($idUser, $idTheme)  Gets the specific $idUser preference given a specific $idTheme
+ * @method createUserPreference($idUser, $idTheme, $params)  Sets a preference to a specific $idUser from a specific $idTheme given $params information
+ * @method updateUserPreference($idUser, $idTheme, $params)  Updates a specific $idTheme preference from a specific $idUser given its $params
+ * @method deleteUserPreference($idUser, $idTheme)  Unsets a specific $idUser preference from a specific $idTheme
+ * @method getUserPreferences($idUser)  Retrieves information about all $idUser preferences
  *
  * Channel:
- * @method getChannel($idChannel)               Gets the specific $idChannel information
- * @method createChannel($params)               Creates a channel given $params information
- * @method updateChannel($idChannel, $params)   Updates a specific $idChannel given its $params
- * @method deleteChannel($idChannel)            Deletes a specific $idChannel
- * @method getChannels()                        Retrieves information about all registered channels
+ * @method getChannel($idChannel)  Gets the specific $idChannel information
+ * @method createChannel($params)  Creates a channel given $params information
+ * @method updateChannel($idChannel, $params)  Updates a specific $idChannel given its $params
+ * @method deleteChannel($idChannel)  Deletes a specific $idChannel
+ * @method getChannels()  Retrieves information about all registered channels
  *
  * Theme:
- * @method getTheme($idTheme)               Gets the specific $idTheme information
- * @method createTheme($params)             Creates a theme given $params information
- * @method updateTheme($idTheme, $params)   Updates a specific $idTheme given its $params
- * @method deleteTheme($idTheme)            Deletes a specific $idTheme
- * @method getThemes()                      Retrieves information about all registered themes
- * @method getThemesByRange($range)         Retrieves information about all registered themes by specific $range
+ * @method getTheme($idTheme)  Gets the specific $idTheme information
+ * @method createTheme($params)  Creates a theme given $params information
+ * @method updateTheme($idTheme, $params)  Updates a specific $idTheme given its $params
+ * @method deleteTheme($idTheme)  Deletes a specific $idTheme
+ * @method getThemes()  Retrieves information about all registered themes
+ * @method getThemesByRange($range)  Retrieves information about all registered themes by specific $range
  *
  * Subject:
- * @method getSubject($idSubject)               Gets the specific $idSubject information
- * @method createSubject($params)               Creates a subject given $params information
- * @method updateSubject($idSubject, $params)   Updates a specific $idSubject given its $params
- * @method deleteSubject($idSubject)            Deletes a specific $idSubject
- * @method getSubjects()                        Retrieves information about all registered subjects
+ * @method getSubject($idSubject)  Gets the specific $idSubject information
+ * @method createSubject($params)  Creates a subject given $params information
+ * @method updateSubject($idSubject, $params)  Updates a specific $idSubject given its $params
+ * @method deleteSubject($idSubject)  Deletes a specific $idSubject
+ * @method getSubjects()  Retrieves information about all registered subjects
  *
  * Send:
- * @method sendNotification($params)    Sends a notification to the target specified into the $params
+ * @method sendNotification($params)  Sends a notification to the target specified into the $params
  */
 class PushApi_Client
 {
     /**
-     * Main calls that support the PushApi
+     * Main methods that support the PushApi
      */
     const GET = "GET";
     const PUT = "PUT";
     const POST = "POST";
     const DELETE = "DELETE";
-
-    /**
-     * Exception code from the RequestManager
-     */
-    const REQUEST_MANAGER_EXCEPTION = -2;
 
     /**
      * Agent app identification
@@ -110,16 +105,22 @@ class PushApi_Client
      */
     private $appAuth;
 
+    /**
+     * An instance of any RequestManager class
+     * @var RequestManager
+     */
+    private $requestManager;
+
 
     /**
      * Creates a PushApi client that contains all the necessary calls in order to use
      * easily the API. It is required to have created an app before to use de client
      * because it is needed in order to be authenticated toward the PushApi.
      *
-     * @param [integer] $appId     App identification
-     * @param [string]  $appName   App name
-     * @param [string]  $appSecret App secret
-     * @param [RequestManager] $requestManager An instance of any RequestManager class
+     * @param integer  $appId  App identification
+     * @param string  $appName  App name
+     * @param string  $appSecret  App secret
+     * @param RequestManager  $requestManager  An instance of any RequestManager class
      */
     function __construct($appId, $appName, $appSecret, $requestManager)
     {
@@ -142,7 +143,7 @@ class PushApi_Client
 
     /**
      * Sets the app identification
-     * @param [integer] $appId
+     * @param integer  $appId
      */
     public function setAppId($appId)
     {
@@ -151,7 +152,7 @@ class PushApi_Client
 
     /**
      * Returns the app identification
-     * @return [integer]
+     * @return integer
      */
     public function getAppId()
     {
@@ -160,7 +161,7 @@ class PushApi_Client
 
     /**
      * Sets the app name
-     * @param [string] $appName
+     * @param string  $appName
      */
     public function setAppName($appName)
     {
@@ -169,7 +170,7 @@ class PushApi_Client
 
     /**
      * Returns the app name
-     * @return [string]
+     * @return string
      */
     public function getAppName()
     {
@@ -178,7 +179,7 @@ class PushApi_Client
 
     /**
      * Sets the app secret
-     * @param [string] $appSecret
+     * @param string  $appSecret
      */
     public function setAppSecret($appSecret)
     {
@@ -187,7 +188,7 @@ class PushApi_Client
 
     /**
      * Returns the app secret
-     * @return [string]
+     * @return string
      */
     public function getAppSecret()
     {
@@ -196,7 +197,7 @@ class PushApi_Client
 
     /**
      * Returns the app auth
-     * @return [string]
+     * @return string
      */
     public function getAppAuth()
     {
@@ -207,7 +208,7 @@ class PushApi_Client
      * Generates the required authentication given the needed data of the agent
      * app that wants to use the PushApi.
      *
-     * @throws [Exception] If [this condition is met]
+     * @throws Exception  If [this condition is met]
      */
     private function generateAuth()
     {
@@ -219,7 +220,7 @@ class PushApi_Client
 
     /**
      * Sets an instance of a class type RequestManager
-     * @param [RequestManager] $requestManager 
+     * @param RequestManager  $requestManager
      */
     private function setRequestManager($requestManager)
     {
@@ -228,7 +229,7 @@ class PushApi_Client
 
     /**
      * Gets an instance of a class type RequestManager
-     * @return [RequestManager]
+     * @return RequestManager
      */
     private function getRequestManager()
     {
@@ -245,8 +246,8 @@ class PushApi_Client
     //////////////////////////
     /**
      * Gets information about specific $idApp
-     * @param  [int] $idApp [description]
-     * @return [array] Response key => value array
+     * @param  integer  $idApp  App identification
+     * @return array  Response key => value array
      */
     public function getApp($idApp)
     {
@@ -255,9 +256,9 @@ class PushApi_Client
 
     /**
      * Updates the information of the specific $idApp
-     * @param  [type] $idApp  [description]
-     * @param  [array] $params Array with the required params as keys (used with PUT && POST mothod)
-     * @return [array] Response key => value array
+     * @param  integer  idApp  App identification
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST mothod)
+     * @return array  Response key => value array
      */
     public function updateApp($idApp, $params)
     {
@@ -270,8 +271,8 @@ class PushApi_Client
     ///////////////////////////
     /**
      * Gets the specific $idUser information
-     * @param  [integer] $idUser User identification value
-     * @return [array] Response key => value array
+     * @param  integer  $idUser  User identification value
+     * @return array  Response key => value array
      */
     public function getUser($idUser)
     {
@@ -280,8 +281,8 @@ class PushApi_Client
 
     /**
      * Creates an user given $params information
-     * @param  [array] $params Array with the required params as keys (used with PUT && POST mothod)
-     * @return [array] Response key => value array
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST mothod)
+     * @return array  Response key => value array
      */
     public function createUser($params)
     {
@@ -290,9 +291,9 @@ class PushApi_Client
 
     /**
      * Updates a specific $idUser given its $params
-     * @param  [integer] $idUser User identification value
-     * @param  [array] $params Array with the required params as keys (used with PUT && POST mothod)
-     * @return [array] Response key => value array
+     * @param  integer  $idUser  User identification value
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST mothod)
+     * @return array  Response key => value array
      */
     public function updateUser($idUser, $params)
     {
@@ -301,8 +302,8 @@ class PushApi_Client
 
     /**
      * Deletes an specific $idUser
-     * @param  [integer] $idUser User identification value
-     * @return [array] Response key => value array
+     * @param  integer  $idUser  User identification value
+     * @return array  Response key => value array
      */
     public function deleteUser($idUser)
     {
@@ -311,7 +312,7 @@ class PushApi_Client
 
     /**
      * Retrieves information about all registered users
-     * @return [array] Response key => value array
+     * @return array  Response key => value array
      */
     public function getUsers()
     {
@@ -320,8 +321,8 @@ class PushApi_Client
 
     /**
      * Creates multiple users given its emails
-     * @param  [array] $params Array with the required params as keys (used with PUT && POST mothod)
-     * @return [array] Response key => value array
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST mothod)
+     * @return array  Response key => value array
      */
     public function createUsers($params)
     {
@@ -334,8 +335,8 @@ class PushApi_Client
     //////////////////////////////
     /**
      * Gets the specific $idChannel information
-     * @param  [integer] $idChannel Channel identification value
-     * @return [array] Response key => value array
+     * @param  integer  $idChannel  Channel identification value
+     * @return array  Response key => value array
      */
     public function getChannel($idChannel)
     {
@@ -344,8 +345,8 @@ class PushApi_Client
 
     /**
      * Creates an channel given $params information
-     * @param  [array] $params Array with the required params as keys (used with PUT && POST mothod)
-     * @return [array] Response key => value array
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST mothod)
+     * @return array  Response key => value array
      */
     public function createChannel($params)
     {
@@ -354,9 +355,9 @@ class PushApi_Client
 
     /**
      * Updates a specific $idChannel given its $params
-     * @param  [integer] $idChannel Channel identification value
-     * @param  [array] $params Array with the required params as keys (used with PUT && POST mothod)
-     * @return [array] Response key => value array
+     * @param  integer  $idChannel  Channel identification value
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST mothod)
+     * @return array  Response key => value array
      */
     public function updateChannel($idChannel, $params)
     {
@@ -365,8 +366,8 @@ class PushApi_Client
 
     /**
      * Deletes an specific $idChannel
-     * @param  [integer] $idChannel Channel identification value
-     * @return [array] Response key => value array
+     * @param  integer  $idChannel  Channel identification value
+     * @return array  Response key => value array
      */
     public function deleteChannel($idChannel)
     {
@@ -375,7 +376,7 @@ class PushApi_Client
 
     /**
      * Retrieves information about all registered channels
-     * @return [array] Response key => value array
+     * @return array  Response key => value array
      */
     public function getChannels()
     {
@@ -388,8 +389,8 @@ class PushApi_Client
     ////////////////////////////
     /**
      * Gets the specific $idTheme information
-     * @param  [integer] $idTheme Theme identification value
-     * @return [array] Response key => value array
+     * @param  integer  $idTheme  Theme identification value
+     * @return array  Response key => value array
      */
     public function getTheme($idTheme)
     {
@@ -398,8 +399,8 @@ class PushApi_Client
 
     /**
      * Creates an theme given $params information
-     * @param  [array] $params Array with the required params as keys (used with PUT && POST mothod)
-     * @return [array] Response key => value array
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST mothod)
+     * @return array  Response key => value array
      */
     public function createTheme($params)
     {
@@ -408,9 +409,9 @@ class PushApi_Client
 
     /**
      * Updates a specific $idTheme given its $params
-     * @param  [integer] $idTheme Theme identification value
-     * @param  [array] $params Array with the required params as keys (used with PUT && POST mothod)
-     * @return [array] Response key => value array
+     * @param  integer  $idTheme  Theme identification value
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST mothod)
+     * @return array  Response key => value array
      */
     public function updateTheme($idTheme, $params)
     {
@@ -419,8 +420,8 @@ class PushApi_Client
 
     /**
      * Deletes an specific $idTheme
-     * @param  [integer] $idTheme Theme identification value
-     * @return [array] Response key => value array
+     * @param  integer  $idTheme  Theme identification value
+     * @return array  Response key => value array
      */
     public function deleteTheme($idTheme)
     {
@@ -429,7 +430,7 @@ class PushApi_Client
 
     /**
      * Retrieves information about all registered themes
-     * @return [array] Response key => value array
+     * @return array  Response key => value array
      */
     public function getThemes()
     {
@@ -438,8 +439,8 @@ class PushApi_Client
 
     /**
      * Retrieves information about all registered themes by specific $range
-     * @param  [string] $range The range that a theme can have
-     * @return [array] Response key => value array
+     * @param  string  $range The range that a theme can have
+     * @return array  Response key => value array
      */
     public function getThemesByRange($range)
     {
@@ -452,8 +453,8 @@ class PushApi_Client
     //////////////////////////////
     /**
      * Gets the specific $idSubject information
-     * @param  [integer] $idSubject Subject identification value
-     * @return [array] Response key => value array
+     * @param  integer  $idSubject  Subject identification value
+     * @return array  Response key => value array
      */
     public function getSubject($idSubject)
     {
@@ -462,8 +463,8 @@ class PushApi_Client
 
     /**
      * Creates an subject given $params information
-     * @param  [array] $params Array with the required params as keys (used with PUT && POST mothod)
-     * @return [array] Response key => value array
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST mothod)
+     * @return array  Response key => value array
      */
     public function createSubject($params)
     {
@@ -472,9 +473,9 @@ class PushApi_Client
 
     /**
      * Updates a specific $idSubject given its $params
-     * @param  [integer] $idSubject Subject identification value
-     * @param  [array] $params Array with the required params as keys (used with PUT && POST mothod)
-     * @return [array] Response key => value array
+     * @param  integer  $idSubject  Subject identification value
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST mothod)
+     * @return array  Response key => value array
      */
     public function updateSubject($idSubject, $params)
     {
@@ -483,8 +484,8 @@ class PushApi_Client
 
     /**
      * Deletes an specific $idSubject
-     * @param  [integer] $idSubject Subject identification value
-     * @return [array] Response key => value array
+     * @param  integer  $idSubject  Subject identification value
+     * @return array  Response key => value array
      */
     public function deleteSubject($idSubject)
     {
@@ -493,7 +494,7 @@ class PushApi_Client
 
     /**
      * Retrieves information about all registered subjects
-     * @return [array] Response key => value array
+     * @return array  Response key => value array
      */
     public function getSubjects()
     {
@@ -506,9 +507,9 @@ class PushApi_Client
     ///////////////////////////////////
     /**
      * Gets the specific $idUser subscription given a specific $idChannel
-     * @param  [integer] $idUser User identification value
-     * @param  [integer] $idChannel Channel identification value
-     * @return [array] Response key => value array
+     * @param  integer  $idUser  User identification value
+     * @param  integer  $idChannel  Channel identification value
+     * @return array  Response key => value array
      */
     public function getUserSubscription($idUser, $idChannel)
     {
@@ -517,9 +518,9 @@ class PushApi_Client
 
     /**
      * Sets a subscription to a specific $idUser from a specific $idChannel given $params information
-     * @param  [integer] $idUser User identification value
-     * @param  [integer] $idChannel Channel identification value
-     * @return [array] Response key => value array
+     * @param  integer  $idUser  User identification value
+     * @param  integer  $idChannel  Channel identification value
+     * @return array  Response key => value array
      */
     public function createUserSubscription($idUser, $idChannel)
     {
@@ -528,9 +529,9 @@ class PushApi_Client
 
     /**
      * Unsubscribes a specific $idUser from a specific $idChannel
-     * @param  [integer] $idUser User identification value
-     * @param  [integer] $idChannel Channel identification value
-     * @return [array] Response key => value array
+     * @param  integer  $idUser  User identification value
+     * @param  integer  $idChannel  Channel identification value
+     * @return array  Response key => value array
      */
     public function deleteUserSubscription($idUser, $idChannel)
     {
@@ -539,8 +540,8 @@ class PushApi_Client
 
     /**
      * Retrieves information about all $idUser subscriptions
-     * @param  [integer] $idUser User identification value
-     * @return [array] Response key => value array
+     * @param  integer  $idUser  User identification value
+     * @return array  Response key => value array
      */
     public function getUserSubscriptions($idUser)
     {
@@ -553,9 +554,9 @@ class PushApi_Client
     /////////////////////////////////
     /**
      * Gets the specific $idUser preference given a specific $idTheme
-     * @param  [integer] $idUser User identification value
-     * @param  [integer] $idTheme Theme identification value
-     * @return [array] Response key => value array
+     * @param  integer  $idUser  User identification value
+     * @param  integer  $idTheme  Theme identification value
+     * @return array  Response key => value array
      */
     public function getUserPreference($idUser, $idTheme)
     {
@@ -564,10 +565,10 @@ class PushApi_Client
 
     /**
      * Sets a preference to a specific $idUser from a specific $idTheme given $params information
-     * @param  [integer] $idUser User identification value
-     * @param  [integer] $idTheme Theme identification value
-     * @param  [array] $params Array with the required params as keys (used with PUT && POST mothod)
-     * @return [array] Response key => value array
+     * @param  integer  $idUser  User identification value
+     * @param  integer  $idTheme  Theme identification value
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST mothod)
+     * @return array  Response key => value array
      */
     public function createUserPreference($idUser, $idTheme, $params)
     {
@@ -575,11 +576,11 @@ class PushApi_Client
     }
 
     /**
-     * Updates a specific $idTheme preference from a specific $idUser given its $params 
-     * @param  [integer] $idUser User identification value
-     * @param  [integer] $idTheme Theme identification value
-     * @param  [array] $params Array with the required params as keys (used with PUT && POST mothod)
-     * @return [array] Response key => value array
+     * Updates a specific $idTheme preference from a specific $idUser given its $params
+     * @param  integer  $idUser  User identification value
+     * @param  integer  $idTheme  Theme identification value
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST mothod)
+     * @return array  Response key => value array
      */
     public function updateUserPreference($idUser, $idTheme, $params)
     {
@@ -588,9 +589,9 @@ class PushApi_Client
 
     /**
      * Unsets a specific $idUser preference from a specific $idTheme
-     * @param  [integer] $idUser User identification value
-     * @param  [integer] $idTheme Theme identification value
-     * @return [array] Response key => value array
+     * @param  integer  $idUser  User identification value
+     * @param  integer  $idTheme  Theme identification value
+     * @return array  Response key => value array
      */
     public function deleteUserPreference($idUser, $idTheme)
     {
@@ -599,8 +600,8 @@ class PushApi_Client
 
     /**
      * Retrieves information about all $idUser preferences
-     * @param  [integer] $idUser User identification value
-     * @return [array] Response key => value array
+     * @param  integer  $idUser  User identification value
+     * @return array  Response key => value array
      */
     public function getUserPreferences($idUser)
     {
@@ -613,8 +614,8 @@ class PushApi_Client
     //////////////////////////
     /**
      * Sends a notification to the target specified into the $params
-     * @param  [array] $params Array with the required params as keys (used with PUT && POST mothod)
-     * @return [array] Response key => value array
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST mothod)
+     * @return array  Response key => value array
      */
     public function sendNotification($params)
     {
@@ -629,16 +630,16 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method)
-     * @param  [string] $method HTTP method of the request
-     * @param  [type] $idApp   [description]
-     * @param  [array] $params Array with the required params as keys (used with PUT && POST mothod)
-     * @return [array] Response key => value array
+     * @param  string  $method  HTTP method of the request
+     * @param  integer  $idApp   App identification
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST mothod)
+     * @return array  Response key => value array
      *
      * @example $params PUT content: ["name" => "new_name"]
      *
-     * @throws [Exception] If [Invalid @param $method set]
-     * @throws [Exception] If [No @param $params are set]
-     * @throws [Exception] If [There aren't required ids set]
+     * @throws Exception  If [Invalid @param $method set]
+     * @throws Exception  If [No @param $params are set]
+     * @throws Exception  If [There aren't required ids set]
      */
     private function app($method, $idApp, $params = [])
     {
@@ -668,16 +669,16 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method)
-     * @param  [string] $method HTTP method of the request
-     * @param  [integer] $idUser User identification value
-     * @param  [array] $params Array with the required params as keys (used with PUT && POST mothod)
-     * @return [array] Response key => value array
+     * @param  string  $method  HTTP method of the request
+     * @param  integer  $idUser  User identification value
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST mothod)
+     * @return array  Response key => value array
      *
-     * @example $params POST content: ["email" => "a@a.com"]
+     * @example $params  POST  content: ["email" => "a@a.com"]
      * @example $params PUT content: ["email" => "new@a.com", "android_id" => "12345"]
      *
-     * @throws [Exception] If [No @param $params are set]
-     * @throws [Exception] If [There aren't required ids set]
+     * @throws Exception  If [No @param $params are set]
+     * @throws Exception  If [There aren't required ids set]
      */
     private function user($method, $idUser, $params = [])
     {
@@ -704,14 +705,14 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method)
-     * @param  [string] $method HTTP method of the request
-     * @param  [array] $params  Array with the required params as keys (used with PUT && POST mothod)
-     * @return [array] Response key => value array
+     * @param  string  $method  HTTP method of the request
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST mothod)
+     * @return array  Response key => value array
      *
-     * @example $params POST content: ["emails" => "a@a.com,b@b.com,c@c.com"]
+     * @example $params  POST  content: ["emails" => "a@a.com,b@b.com,c@c.com"]
      *
-     * @throws [Exception] If [Invalid @param $method set]
-     * @throws [Exception] If [No @param $params are set]
+     * @throws Exception  If [Invalid @param $method set]
+     * @throws Exception  If [No @param $params are set]
      */
     private function users($method, $params = [])
     {
@@ -737,15 +738,15 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method)
-     * @param  [string] $method HTTP method of the request
-     * @param  [integer] $idChannel Channel identification value
-     * @param  [array] $params Array with the required params as keys (used with PUT && POST mothod)
-     * @return [array] Response key => value array
+     * @param  string  $method  HTTP method of the request
+     * @param  integer  $idChannel  Channel identification value
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST mothod)
+     * @return array  Response key => value array
      *
      * @example $params POST & PUT content: ["name" => "channel_name"]
      *
-     * @throws [Exception] If [No @param $params are set]
-     * @throws [Exception] If [There aren't required ids set]
+     * @throws Exception  If [No @param $params are set]
+     * @throws Exception  If [There aren't required ids set]
      */
     private function channel($method, $idChannel, $params = [])
     {
@@ -772,10 +773,10 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method)
-     * @param  [string] $method HTTP method of the request
-     * @return [array] Response key => value array
+     * @param  string  $method  HTTP method of the request
+     * @return array  Response key => value array
      *
-     * @throws [Exception] If [Invalid @param $method set]
+     * @throws Exception  If [Invalid @param $method set]
      */
     private function channels($method)
     {
@@ -794,15 +795,15 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method)
-     * @param  [string] $method HTTP method of the request
-     * @param  [integer] $idTheme Theme identification value
-     * @param  [array] $params Array with the required params as keys (used with PUT && POST mothod)
-     * @return [array] Response key => value array
+     * @param  string  $method  HTTP method of the request
+     * @param  integer  $idTheme  Theme identification value
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST mothod)
+     * @return array  Response key => value array
      *
      * @example $params POST & PUT content: ["name" => "theme_name", "range" => "unicast"]
      *
-     * @throws [Exception] If [No @param $params are set]
-     * @throws [Exception] If [There aren't required ids set]
+     * @throws Exception  If [No @param $params are set]
+     * @throws Exception  If [There aren't required ids set]
      */
     private function theme($method, $idTheme, $params = [])
     {
@@ -829,10 +830,10 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method)
-     * @param  [string] $method HTTP method of the request
-     * @return [array] Response key => value array
+     * @param  string  $method  HTTP method of the request
+     * @return array  Response key => value array
      *
-     * @throws [Exception] If [Invalid @param $method set]
+     * @throws Exception  If [Invalid @param $method set]
      */
     private function themes($method)
     {
@@ -851,12 +852,12 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method)
-     * @param  [string] $method HTTP method of the request
-     * @param  [string] $range The range value that a theme can have
-     * @return [array] Response key => value array
+     * @param  string  $method  HTTP method of the request
+     * @param  string  $range The range value that a theme can have
+     * @return array  Response key => value array
      *
-     * @throws [Exception] If [Invalid @param $method set]
-     * @throws [Exception] If [There aren't required ids set]
+     * @throws Exception  If [Invalid @param $method set]
+     * @throws Exception  If [There aren't required ids set]
      */
     private function themesByRange($method, $range)
     {
@@ -864,11 +865,11 @@ class PushApi_Client
             throw new Exception("Invalid call method", 1);
         }
 
-        if (!isset($idUser)) {
+        if (!isset($range)) {
             throw new Exception("Url can't be created, expecting referer id", 3);
         }
 
-        $url = "theme/range/$range";
+        $url = "themes/range/$range";
         $request = $this->getRequestManager();
         try {
             return $request->sendRequest($method, $url);
@@ -879,15 +880,15 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method)
-     * @param  [string] $method HTTP method of the request
-     * @param  [integer] $idSubject Subject identification value
-     * @param  [array] $params Array with the required params as keys (used with PUT && POST mothod)
-     * @return [array] Response key => value array
+     * @param  string  $method  HTTP method of the request
+     * @param  integer  $idSubject  Subject identification value
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST mothod)
+     * @return array  Response key => value array
      *
      * @example $params POST & PUT content: ["theme_name" => "name_theme", "description" => "this is a description example"]
      *
-     * @throws [Exception] If [No @param $params are set]
-     * @throws [Exception] If [There aren't required ids set]
+     * @throws Exception  If [No @param $params are set]
+     * @throws Exception  If [There aren't required ids set]
      */
     private function subject($method, $idSubject, $params = [])
     {
@@ -914,10 +915,10 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method)
-     * @param  [string] $method HTTP method of the request
-     * @return [array] Response key => value array
+     * @param  string  $method  HTTP method of the request
+     * @return array  Response key => value array
      *
-     * @throws [Exception] If [Invalid @param $method set]
+     * @throws Exception  If [Invalid @param $method set]
      */
     private function subjects($method)
     {
@@ -936,12 +937,12 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method)
-     * @param  [integer] $idUser User identification value
-     * @param  [integer] $idChannel Channel identification value
-     * @return [array] Response key => value array
+     * @param  integer  $idUser  User identification value
+     * @param  integer  $idChannel  Channel identification value
+     * @return array  Response key => value array
      *
-     * @throws [Exception] If [Invalid @param $method set]
-     * @throws [Exception] If [There aren't required ids set]
+     * @throws Exception  If [Invalid @param $method set]
+     * @throws Exception  If [There aren't required ids set]
      */
     private function subscription($method, $idUser, $idChannel)
     {
@@ -968,11 +969,11 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method)
-     * @param  [integer] $idUser User identification value
-     * @return [array] Response key => value array
+     * @param  integer  $idUser  User identification value
+     * @return array  Response key => value array
      *
-     * @throws [Exception] If [Invalid @param $method set]
-     * @throws [Exception] If [There aren't required ids set]
+     * @throws Exception  If [Invalid @param $method set]
+     * @throws Exception  If [There aren't required ids set]
      */
     private function subscriptions($method, $idUser)
     {
@@ -995,16 +996,16 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method)
-     * @param  [string] $method HTTP method of the request
-     * @param  [integer] $idUser User identification value
-     * @param  [integer] $idTheme Theme identification value
-     * @param  [array] $params Array with the required params as keys (used with PUT && POST mothod)
-     * @return [array] Response key => value array
+     * @param  string  $method  HTTP method of the request
+     * @param  integer  $idUser  User identification value
+     * @param  integer  $idTheme  Theme identification value
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST mothod)
+     * @return array  Response key => value array
      *
-     * @example $params POST content: ["option" => 2]
+     * @example $params  POST  content: ["option" => 2]
      *
-     * @throws [Exception] If [No @param $params are set]
-     * @throws [Exception] If [There aren't required ids set]
+     * @throws Exception  If [No @param $params are set]
+     * @throws Exception  If [There aren't required ids set]
      */
     private function preference($method, $idUser, $idTheme, $params = [])
     {
@@ -1030,12 +1031,12 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method)
-     * @param  [string] $method HTTP method of the request
-     * @param  [integer] $idUser User identification value
-     * @return [array] Response key => value array
+     * @param  string  $method  HTTP method of the request
+     * @param  integer  $idUser  User identification value
+     * @return array  Response key => value array
      *
-     * @throws [Exception] If [Invalid @param $method set]
-     * @throws [Exception] If [There aren't required ids set]
+     * @throws Exception  If [Invalid @param $method set]
+     * @throws Exception  If [There aren't required ids set]
      */
     private function preferences($method, $idUser)
     {
@@ -1058,14 +1059,14 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method)
-     * @param  [string] $method HTTP method of the request
-     * @param  [array] $params Array with the required params as keys (used with PUT && POST mothod)
-     * @return [array] Response key => value array
+     * @param  string  $method  HTTP method of the request
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST mothod)
+     * @return array  Response key => value array
      *
-     * @example $params POST content: ["theme" => "theme_name", "message" => "Message notification"]
+     * @example $params  POST  content: ["theme" => "theme_name", "message" => "Message notification"]
      *
-     * @throws [Exception] If [Invalid @param $method set]
-     * @throws [Exception] If [No @param $params are set]
+     * @throws Exception  If [Invalid @param $method set]
+     * @throws Exception  If [No @param $params are set]
      */
     private function send($method, $params)
     {

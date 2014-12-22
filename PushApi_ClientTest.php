@@ -324,6 +324,19 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(empty($themes["result"]["params"]));
     }
 
+    public function testThemesByRange()
+    {
+        $idRange = "unicast";
+        $url = "themes/range/$idRange";
+
+        // Get themes by range
+        $themes = self::$client->getThemesByRange($idRange);
+        $this->assertTrue(isset($themes["result"]));
+        $this->assertEquals(self::GET, $themes["result"]["method"]);
+        $this->assertEquals((self::$baseUrl . $url), $themes["result"]["path"]);
+        $this->assertTrue(empty($themes["result"]["params"]));
+    }
+
     public function testUserPreferenceRequests()
     {
         $idUser = 63;
