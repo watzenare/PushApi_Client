@@ -571,7 +571,7 @@ class PushApi_Client
      */
     public function createUserPreference($idUser, $idTheme, $params)
     {
-        return $this->preference(self::POST, $idUser, $params);
+        return $this->preference(self::POST, $idUser, $idTheme, $params);
     }
 
     /**
@@ -657,7 +657,7 @@ class PushApi_Client
         $url = "app/$idApp";
         $request = $this->getRequestManager();
         try {
-            if (empty($params) && $method == self::PUT) {
+            if ($method == self::PUT) {
                 return $request->sendRequest($method, $url, $params);
             }
             return $request->sendRequest($method, $url);
@@ -1019,7 +1019,7 @@ class PushApi_Client
         $url = "user/$idUser/preference/$idTheme";
         $request = $this->getRequestManager();
         try {
-            if ($method == self::POST) {
+            if ($method == self::POST || $method == self::PUT) {
                 return $request->sendRequest($method, $url, $params);
             }
             return $request->sendRequest($method, $url);
