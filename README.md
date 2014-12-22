@@ -1,19 +1,13 @@
 # PushApi_Client
 
-[![Analytics](https://ga-beacon.appspot.com/UA-57718174-1/pushapi/readme?pixel)](https://github.com/watzenare/PushApi_Client)
+[![Latest Stable Version](https://poser.pugx.org/pushapi/client-php/v/stable.svg)](https://packagist.org/packages/pushapi/client-php)
+[![License](https://poser.pugx.org/pushapi/client-php/license.svg)](https://packagist.org/packages/pushapi/client-php)
 
-## Introduction
+## Install [![Analytics](https://ga-beacon.appspot.com/UA-57718174-1/pushapi/readme?pixel)](https://github.com/watzenare/PushApi_Client)
 
-A PHP standalone client that facilitates to developers the use of all the functionalities of the PushApi.
+You can easily install the PushApi_Client using Composer.
 
-
-## Install
-
-You can install the PushApi_Client with Composer or Manually.
-
-### Composer
-
-In your composer.json file just add the latest stable version of the client (see versions on [Packagist](https://packagist.org/packages/pushapi/client-php)):
+In your composer.json file just add the latest stable version of the Client (see versions on [Packagist](https://packagist.org/packages/pushapi/client-php)):
 
     {
         "require": {
@@ -21,23 +15,12 @@ In your composer.json file just add the latest stable version of the client (see
         }
     }
 
-### Manually
-
-Clone the project and add it in your project folder:
-
-    $ cd path/to/your/project/pushapi_client
-    
-Require the Client in your PHP file:
-
-```php
-require "PushApi_Client/PushApi_Client.php";
-```
-
 
 ## Requirements
 
+- Have a basic knowledge about what [PushApi](https://github.com/watzenare/PushApi) does and its functionalities
+- [PushApi](https://github.com/watzenare/PushApi) running on server
 - PHP >= 5.5
-- Have a basic knowledge about what the PushApi does and its functionalities
 
 
 ## Example Usage
@@ -45,16 +28,31 @@ require "PushApi_Client/PushApi_Client.php";
 ```php
 require "vendor/autoload.php";
 
-$test = new PushApi_Client(1, "my_app", "my_secret", "http://my_uri.com/", 8080);
+use \RequestManagers\CurlRequestManager;
+
+$requestManager = new CurlRequestManager("http://my_uri.com/", 8080);
+$test = new PushApi_Client(1, "my_app", "my_secret", $requestManager);
+
 try {
 	$user = $test->getUser(1);
 	echo $user['result']['email'] . "\n";
-} catch (PushApiException $e) {
-	echo "PushApiException - " . $e->getMessage() . "\n";
 } catch (Exception $e) {
 	echo "Exception - " . $e->getMessage() . "\n";
 }
 ```
+
+## Request Managers
+
+The Request Managers are objects that implement sending functions that lets the Client to send calls and receive responses. Currently
+there are two Request Managers but only one can be used for this use because the other one is used for tests:
+
+- Curl Request Manager, it uses the PHP Curl method in order to send an receive the Client necesities.
+- Dummy Request Manager, it is used in order to get the Client calls, check if it is working correctly and it simulates a request response with the client information.
+
+Pending:
+
+- [Guzzle](https://github.com/guzzle/guzzle) Request Manager, it will use Guzzle functionalities.
+
 
 ## Support
 
@@ -69,4 +67,12 @@ Also I will be grateful if you want to make a donation, this project hasn't got 
 
 The PushApi_Client is released under the MIT public license.
 
-Thank you!
+
+## Acknowledgements
+
+I want to thank the collaboration of those GitHub users that are supporting me during the project.
+
+- [jmartin82](https://github.com/jmartin82)
+- [paumoreno](https://github.com/paumoreno)
+- [muertet](https://github.com/muertet)
+- [marcmascarell](https://github.com/marcmascarell)

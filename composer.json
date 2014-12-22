@@ -2,7 +2,12 @@
     "name": "pushapi/client-php",
     "type": "library",
     "description": "A PHP standalone client that facilitates to developers the use of all the PushApi functionalities",
-	"keywords": ["pushapi","php-push", "pushapi-php", "pushapi-client-php"],
+	"keywords": [
+        "pushapi",
+        "php-push",
+        "pushapi-php",
+        "pushapi-client-php"
+    ],
     "license": "MIT",
 	"authors": [
 		{
@@ -13,9 +18,15 @@
     "require": {
         "php": ">=5.5"
     },
+    "require-dev": {
+        "phpunit/phpunit": "4.4.0"
+    },
     "autoload": {
         "classmap": [
             "PushApi_Client.php"
-        ]
+        ],
+        "psr-4": {
+            "RequestManagers\\": "RequestManagers"
+        }
     }
 }
