@@ -199,6 +199,7 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
         );
         $url = "channel/$id";
         $urlPost = "channel";
+        $urlByName = "channel_name";
 
         // Create channel
         $channel = self::$client->createChannel($params);
@@ -229,6 +230,14 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(self::DELETE, $channel["result"]["method"]);
         $this->assertEquals((self::$baseUrl . $url), $channel["result"]["path"]);
         $this->assertTrue(empty($channel["result"]["params"]));
+
+        // Get channel by name
+        $channel = self::$client->getChannelByName($params);
+        $this->assertTrue(isset($channel["result"]));
+        $this->assertEquals(self::GET, $channel["result"]["method"]);
+        $this->assertEquals((self::$baseUrl . $urlByName), $channel["result"]["path"]);
+        $this->assertTrue(!empty($channel["result"]["params"]));
+        $this->assertArrayHasKey($key, $channel["result"]["params"]);
     }
 
     /**
@@ -266,6 +275,7 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
         );
         $url = "theme/$id";
         $urlPost = "theme";
+        $urlByName = "theme_name";
 
         // Create theme
         $theme = self::$client->createTheme($params);
@@ -298,6 +308,14 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(self::DELETE, $theme["result"]["method"]);
         $this->assertEquals((self::$baseUrl . $url), $theme["result"]["path"]);
         $this->assertTrue(empty($theme["result"]["params"]));
+
+        // Get theme by name
+        $theme = self::$client->getThemeByName($params);
+        $this->assertTrue(isset($theme["result"]));
+        $this->assertEquals(self::GET, $theme["result"]["method"]);
+        $this->assertEquals((self::$baseUrl . $urlByName), $theme["result"]["path"]);
+        $this->assertTrue(!empty($theme["result"]["params"]));
+        $this->assertArrayHasKey($key1, $theme["result"]["params"]);
     }
 
     /**

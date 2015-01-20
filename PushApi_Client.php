@@ -52,6 +52,7 @@
  * @method updateChannel($idChannel, $params)  Updates a specific $idChannel given its $params
  * @method deleteChannel($idChannel)  Deletes a specific $idChannel
  * @method getChannels()  Retrieves information about all registered channels
+ * @method getChannelByName($params)  Gets the specific channel given its name
  *
  * Theme:
  * @method getTheme($idTheme)  Gets the specific $idTheme information
@@ -60,6 +61,7 @@
  * @method deleteTheme($idTheme)  Deletes a specific $idTheme
  * @method getThemes()  Retrieves information about all registered themes
  * @method getThemesByRange($range)  Retrieves information about all registered themes by specific $range
+ * @method getThemeByName($params)  Gets the specific theme given its name
  *
  * Subject:
  * @method getSubject($idSubject)  Gets the specific $idSubject information
@@ -383,6 +385,16 @@ class PushApi_Client
         return $this->channels(self::GET);
     }
 
+    /**
+     * Gets the specific channel given its name
+     * @param  array  $params  Channel identification value
+     * @return array  Response key => value array
+     */
+    public function getChannelByName($params)
+    {
+        return $this->channel(self::GET, 0, $params);
+    }
+
 
     ////////////////////////////
     //      THEME CALLS       //
@@ -445,6 +457,16 @@ class PushApi_Client
     public function getThemesByRange($range)
     {
         return $this->themesByRange(self::GET, $range);
+    }
+
+    /**
+     * Gets the specific theme given its name
+     * @param  array  $params  Theme identification value
+     * @return array  Response key => value array
+     */
+    public function getThemeByName($params)
+    {
+        return $this->theme(self::GET, 0, $params);
     }
 
 
@@ -764,6 +786,10 @@ class PushApi_Client
             if ($method == self::POST) {
                 return $request->sendRequest($method, $url, $params);
             }
+            if (!empty($params) && $method == self::GET) {
+                $url = "channel_name";
+                return $request->sendRequest($method, $url, $params);
+            }
             $url .= "/$idChannel";
             return $request->sendRequest($method, $url, $params);
         } catch (Exception $e) {
@@ -819,6 +845,10 @@ class PushApi_Client
         $request = $this->getRequestManager();
         try {
             if ($method == self::POST) {
+                return $request->sendRequest($method, $url, $params);
+            }
+            if (!empty($params) && $method == self::GET) {
+                $url = "theme_name";
                 return $request->sendRequest($method, $url, $params);
             }
             $url .= "/$idTheme";
