@@ -70,8 +70,8 @@ class CurlRequestManager implements IRequestManager
      * It is needed the $host {@link $baseUrl} and port {@link $port} of the PushApi
      * in order to establish the connection successfully when needed.
      *
-     * @param [string]  $baseUrl   The host where the API is running
-     * @param [integer] $port      The port where the API is running
+     * @param string  $baseUrl   The host where the API is running
+     * @param integer $port      The port where the API is running
      */
     function __construct($baseUrl, $port)
     {
@@ -86,7 +86,7 @@ class CurlRequestManager implements IRequestManager
 
     /**
      * Sets the base url
-     * @param [string] $url
+     * @param string $url
      */
     public function setBaseUrl($url)
     {
@@ -95,7 +95,7 @@ class CurlRequestManager implements IRequestManager
 
     /**
      * Returns the base url
-     * @return [string]
+     * @return string
      */
     public function getBaseUrl()
     {
@@ -104,7 +104,7 @@ class CurlRequestManager implements IRequestManager
 
     /**
      * Sets the port
-     * @param [integer] $port
+     * @param integer $port
      */
     public function setPort($port)
     {
@@ -113,7 +113,7 @@ class CurlRequestManager implements IRequestManager
 
     /**
      * Returns the port
-     * @return [integer]
+     * @return integer
      */
     public function getPort()
     {
@@ -122,7 +122,7 @@ class CurlRequestManager implements IRequestManager
 
     /**
      * Sets the verbose
-     * @param [boolean] $verbose
+     * @param boolean $verbose
      */
     public function setVerbose($verbose)
     {
@@ -131,7 +131,7 @@ class CurlRequestManager implements IRequestManager
 
     /**
      * Returns the app auth
-     * @return [boolean]
+     * @return boolean
      */
     public function getVerbose()
     {
@@ -140,7 +140,7 @@ class CurlRequestManager implements IRequestManager
 
     /**
      * Sets the app identification
-     * @param [integer] $appId
+     * @param integer $appId
      */
     public function setAppId($appId)
     {
@@ -149,7 +149,7 @@ class CurlRequestManager implements IRequestManager
 
     /**
      * Returns the app identification
-     * @return [integer]
+     * @return integer
      */
     public function getAppId()
     {
@@ -158,7 +158,7 @@ class CurlRequestManager implements IRequestManager
 
     /**
      * Sets the app auth
-     * @param [string] $appAuth
+     * @param string $appAuth
      */
     public function setAppAuth($appAuth)
     {
@@ -167,7 +167,7 @@ class CurlRequestManager implements IRequestManager
 
     /**
      * Returns the app auth
-     * @return [string]
+     * @return string
      */
     public function getAppAuth()
     {
@@ -181,14 +181,13 @@ class CurlRequestManager implements IRequestManager
 
     /**
      * Sends a call to the PushApi and retrieves the result.
-     * @param  [string] $method HTTP method of the request
-     * @param  [string] $path   The path that must be added to the base url in order to get the right API call
-     * @param  [array] $params  Array with the required params as keys (used with PUT && POST mothod)
-     * @return [array] Response key => value array
+     * @param  string $method HTTP method of the request
+     * @param  string $path   The path that must be added to the base url in order to get the right API call
+     * @param  array $params  Array with the required params as keys (used with PUT && POST mothod)
+     * @return array Response key => value array
      *
-     * @throws [Exception] If [connection failed]
-     */
-    public function sendRequest($method, $path, $params = [])
+     * @throws Exception If onnection failed
+     */    public function sendRequest($method, $path, $params = [])
     {
         if (empty($this->getAppId()) || empty($this->getAppAuth())) {
             throw new \Exception("RequestManager has no app params set", -2);
@@ -247,11 +246,11 @@ class CurlRequestManager implements IRequestManager
      * the raw output. This output must be transformed (string to array) and then it is easier to get the information.
      * When response is readable, it is searched the body of the response and returned or if an error is returned, it
      * generates a Exception with the error message recieved from the PushApi.
-     * @param  [string] $curlResponse The raw output recived from the cURL
-     * @param  [array] $curlHeaders  Information about the transfer
-     * @return [array] Response key => value array
+     * @param  string $curlResponse The raw output recived from the cURL
+     * @param  array $curlHeaders  Information about the transfer
+     * @return array Response key => value array
      *
-     * @throws [Exception] If [PushApi returns fail response]
+     * @throws Exception If PushApi returns fail response
      */
     public function parseCurlResponse($curlResponse, $curlHeaders)
     {

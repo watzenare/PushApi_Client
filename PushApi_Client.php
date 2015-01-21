@@ -392,7 +392,7 @@ class PushApi_Client
      */
     public function getChannelByName($params)
     {
-        return $this->channel(self::GET, 0, $params);
+        return $this->channelByName(self::GET, $params);
     }
 
 
@@ -466,7 +466,7 @@ class PushApi_Client
      */
     public function getThemeByName($params)
     {
-        return $this->theme(self::GET, 0, $params);
+        return $this->themeByName(self::GET, $params);
     }
 
 
@@ -786,10 +786,6 @@ class PushApi_Client
             if ($method == self::POST) {
                 return $request->sendRequest($method, $url, $params);
             }
-            if (!empty($params) && $method == self::GET) {
-                $url = "channel_name";
-                return $request->sendRequest($method, $url, $params);
-            }
             $url .= "/$idChannel";
             return $request->sendRequest($method, $url, $params);
         } catch (Exception $e) {
@@ -822,6 +818,34 @@ class PushApi_Client
     /**
      * Prepares the API call given the different possibilities (depending on the $method)
      * @param  string  $method  HTTP method of the request
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST mothod)
+     * @return array  Response key => value array
+     *
+     * @throws Exception  If [Invalid @param $method set]
+     * @throws Exception  If [There aren't required ids set]
+     */
+    private function channelByName($method, $params)
+    {
+        if ($method != self::GET) {
+            throw new Exception("Invalid call method", 1);
+        }
+
+        if (empty($params)) {
+            throw new Exception("Trying to add data without params", 2);
+        }
+
+        $url = "channel_name?" . http_build_query($params);
+        $request = $this->getRequestManager();
+        try {
+            return $request->sendRequest($method, $url, $params);
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), $e->getCode());
+        }
+    }
+
+    /**
+     * Prepares the API call given the different possibilities (depending on the $method)
+     * @param  string  $method  HTTP method of the request
      * @param  integer  $idTheme  Theme identification value
      * @param  array  $params  Array with the required params as keys (used with PUT && POST mothod)
      * @return array  Response key => value array
@@ -845,10 +869,6 @@ class PushApi_Client
         $request = $this->getRequestManager();
         try {
             if ($method == self::POST) {
-                return $request->sendRequest($method, $url, $params);
-            }
-            if (!empty($params) && $method == self::GET) {
-                $url = "theme_name";
                 return $request->sendRequest($method, $url, $params);
             }
             $url .= "/$idTheme";
@@ -903,6 +923,34 @@ class PushApi_Client
         $request = $this->getRequestManager();
         try {
             return $request->sendRequest($method, $url);
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), $e->getCode());
+        }
+    }
+
+    /**
+     * Prepares the API call given the different possibilities (depending on the $method)
+     * @param  string  $method  HTTP method of the request
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST mothod)
+     * @return array  Response key => value array
+     *
+     * @throws Exception  If [Invalid @param $method set]
+     * @throws Exception  If [There aren't required ids set]
+     */
+    private function themeByName($method, $params)
+    {
+        if ($method != self::GET) {
+            throw new Exception("Invalid call method", 1);
+        }
+
+        if (empty($params)) {
+            throw new Exception("Trying to add data without params", 2);
+        }
+
+        $url = "theme_name?" . http_build_query($params);
+        $request = $this->getRequestManager();
+        try {
+            return $request->sendRequest($method, $url, $params);
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), $e->getCode());
         }

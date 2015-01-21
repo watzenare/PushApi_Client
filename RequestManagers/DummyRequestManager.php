@@ -48,8 +48,8 @@ class DummyRequestManager implements IRequestManager
      * It is needed the $host {@link $baseUrl} and port {@link $port} of the PushApi
      * in order to establish the connection successfully when needed.
      *
-     * @param [string]  $baseUrl   The host where the API is running
-     * @param [integer] $port      The port where the API is running
+     * @param string  $baseUrl   The host where the API is running
+     * @param integer $port      The port where the API is running
      */
     function __construct($baseUrl, $port)
     {
@@ -64,7 +64,7 @@ class DummyRequestManager implements IRequestManager
 
     /**
      * Sets the base url
-     * @param [string] $url
+     * @param string $url
      */
     public function setBaseUrl($url)
     {
@@ -73,7 +73,7 @@ class DummyRequestManager implements IRequestManager
 
     /**
      * Returns the base url
-     * @return [string]
+     * @return string
      */
     public function getBaseUrl()
     {
@@ -82,7 +82,7 @@ class DummyRequestManager implements IRequestManager
 
     /**
      * Sets the port
-     * @param [integer] $port
+     * @param integer $port
      */
     public function setPort($port)
     {
@@ -91,7 +91,7 @@ class DummyRequestManager implements IRequestManager
 
     /**
      * Returns the port
-     * @return [integer]
+     * @return integer
      */
     public function getPort()
     {
@@ -100,7 +100,7 @@ class DummyRequestManager implements IRequestManager
 
     /**
      * Sets the app identification
-     * @param [integer] $appId
+     * @param integer $appId
      */
     public function setAppId($appId)
     {
@@ -109,7 +109,7 @@ class DummyRequestManager implements IRequestManager
 
     /**
      * Returns the app identification
-     * @return [integer]
+     * @return integer
      */
     public function getAppId()
     {
@@ -118,7 +118,7 @@ class DummyRequestManager implements IRequestManager
 
     /**
      * Sets the app auth
-     * @param [string] $appAuth
+     * @param string $appAuth
      */
     public function setAppAuth($appAuth)
     {
@@ -127,7 +127,7 @@ class DummyRequestManager implements IRequestManager
 
     /**
      * Returns the app auth
-     * @return [string]
+     * @return string
      */
     public function getAppAuth()
     {
@@ -136,11 +136,11 @@ class DummyRequestManager implements IRequestManager
 
     /**
      * Retrives the request params received
-     * @param  [string] $method HTTP method of the request
-     * @param  [string] $path   The path that must be added to the base url in order to get the right API call
-     * @param  [array] $params  Array with the required params as keys (used with PUT && POST mothod).
+     * @param  string $method HTTP method of the request
+     * @param  string $path   The path that must be added to the base url in order to get the right API call
+     * @param  array $params  Array with the required params as keys (used with PUT && POST mothod).
      *                          If it is set a key param 'exception' and its value is true
-     * @return [array] Response key => value array
+     * @return array Response key => value array
      */
     public function sendRequest($method, $path, $params = [])
     {
