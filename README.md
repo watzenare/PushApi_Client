@@ -3,7 +3,7 @@
 [![Latest Stable Version](https://poser.pugx.org/pushapi/client-php/v/stable.svg)](https://packagist.org/packages/pushapi/client-php)
 [![License](https://poser.pugx.org/pushapi/client-php/license.svg)](https://packagist.org/packages/pushapi/client-php)
 
-## Install [![Analytics](https://ga-beacon.appspot.com/UA-57718174-1/pushapi/readme?pixel)](https://github.com/watzenare/PushApi_Client)
+## Install [![Analytics](https://ga-beacon.appspot.com/UA-57718174-1/pushapi/client?pixel)](https://github.com/watzenare/PushApi_Client)
 
 You can easily install the PushApi_Client using Composer.
 
