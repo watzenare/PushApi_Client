@@ -61,7 +61,19 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(self::getAuth(), self::$requestManager->getAppAuth());
     }
 
-    public function testAppRequest()
+    public function testGetAppRequest()
+    {
+        $id = 22;
+        $url = "app/$id";
+
+        $app = self::$client->getApp($id);
+        $this->assertTrue(isset($app["result"]));
+        $this->assertEquals(self::GET, $app["result"]["method"]);
+        $this->assertEquals((self::$baseUrl . $url), $app["result"]["path"]);
+        $this->assertTrue(empty($app["result"]["params"]));
+    }
+
+    public function testUpdateAppRequest()
     {
         $id = 22;
         $key = "name";
@@ -70,14 +82,6 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
         );
         $url = "app/$id";
 
-        // Get app
-        $app = self::$client->getApp($id);
-        $this->assertTrue(isset($app["result"]));
-        $this->assertEquals(self::GET, $app["result"]["method"]);
-        $this->assertEquals((self::$baseUrl . $url), $app["result"]["path"]);
-        $this->assertTrue(empty($app["result"]["params"]));
-
-        // Update app
         $app = self::$client->updateApp($id, $params);
         $this->assertTrue(isset($app["result"]));
         $this->assertEquals(self::PUT, $app["result"]["method"]);
@@ -100,7 +104,36 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
         $user = self::$client->updateApp($id, $params);
     }
 
-    public function testUserRequests()
+    public function testCreateUserRequests()
+    {
+        $id = 3;
+        $key = "email";
+        $params = array(
+            $key => "email@test.com"
+        );
+        $url = "user";
+
+        $user = self::$client->createUser($params);
+        $this->assertTrue(isset($user["result"]));
+        $this->assertEquals(self::POST, $user["result"]["method"]);
+        $this->assertEquals((self::$baseUrl . $url), $user["result"]["path"]);
+        $this->assertTrue(!empty($user["result"]["params"]));
+        $this->assertArrayHasKey($key, $user["result"]["params"]);
+    }
+
+    public function testGetUserRequests()
+    {
+        $id = 3;
+        $url = "user/$id";
+
+        $user = self::$client->getUser($id);
+        $this->assertTrue(isset($user["result"]));
+        $this->assertEquals(self::GET, $user["result"]["method"]);
+        $this->assertEquals((self::$baseUrl . $url), $user["result"]["path"]);
+        $this->assertTrue(empty($user["result"]["params"]));
+    }
+
+    public function testUpdateUserRequests()
     {
         $id = 3;
         $key = "email";
@@ -108,32 +141,20 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
             $key => "email@test.com"
         );
         $url = "user/$id";
-        $urlPost = "user";
 
-        // Create an user
-        $user = self::$client->createUser($params);
-        $this->assertTrue(isset($user["result"]));
-        $this->assertEquals(self::POST, $user["result"]["method"]);
-        $this->assertEquals((self::$baseUrl . $urlPost), $user["result"]["path"]);
-        $this->assertTrue(!empty($user["result"]["params"]));
-        $this->assertArrayHasKey($key, $user["result"]["params"]);
-
-        // Get an user
-        $user = self::$client->getUser($id);
-        $this->assertTrue(isset($user["result"]));
-        $this->assertEquals(self::GET, $user["result"]["method"]);
-        $this->assertEquals((self::$baseUrl . $url), $user["result"]["path"]);
-        $this->assertTrue(empty($user["result"]["params"]));
-
-        // Update an user
         $user = self::$client->updateUser($id, $params);
         $this->assertTrue(isset($user["result"]));
         $this->assertEquals(self::PUT, $user["result"]["method"]);
         $this->assertEquals((self::$baseUrl . $url), $user["result"]["path"]);
         $this->assertTrue(!empty($user["result"]["params"]));
         $this->assertArrayHasKey($key, $user["result"]["params"]);
+    }
 
-        // Delete an user
+    public function testDeleteUserRequests()
+    {
+        $id = 3;
+        $url = "user/$id";
+
         $user = self::$client->deleteUser($id);
         $this->assertTrue(isset($user["result"]));
         $this->assertEquals(self::DELETE, $user["result"]["method"]);
@@ -153,24 +174,26 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
         $user = self::$client->createUser($params);
     }
 
-    public function testUsersRequests()
+    public function testCreateUsersRequests()
     {
-        $id = 3;
         $key = "email";
         $params = array(
             $key => "email@test.com,email1@test.com,email2@test.com,email3@test.com"
         );
         $url = "users";
 
-        // Create users
         $user = self::$client->createUsers($params);
         $this->assertTrue(isset($user["result"]));
         $this->assertEquals(self::POST, $user["result"]["method"]);
         $this->assertEquals((self::$baseUrl . $url), $user["result"]["path"]);
         $this->assertTrue(!empty($user["result"]["params"]));
         $this->assertArrayHasKey($key, $user["result"]["params"]);
+    }
 
-        // Get users
+    public function testGetUsersRequests()
+    {
+        $url = "users";
+
         $user = self::$client->getUsers();
         $this->assertTrue(isset($user["result"]));
         $this->assertEquals(self::GET, $user["result"]["method"]);
@@ -190,7 +213,36 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
         $user = self::$client->createUsers($params);
     }
 
-    public function testChannelRequests()
+    public function testCreateChannelRequests()
+    {
+        $id = 54;
+        $key = "name";
+        $params = array(
+            $key => "channel_test"
+        );
+        $url = "channel";
+
+        $channel = self::$client->createChannel($params);
+        $this->assertTrue(isset($channel["result"]));
+        $this->assertEquals(self::POST, $channel["result"]["method"]);
+        $this->assertEquals((self::$baseUrl . $url), $channel["result"]["path"]);
+        $this->assertTrue(!empty($channel["result"]["params"]));
+        $this->assertArrayHasKey($key, $channel["result"]["params"]);
+    }
+
+    public function testGetChannelRequests()
+    {
+        $id = 54;
+        $url = "channel/$id";
+
+        $channel = self::$client->getChannel($id);
+        $this->assertTrue(isset($channel["result"]));
+        $this->assertEquals(self::GET, $channel["result"]["method"]);
+        $this->assertEquals((self::$baseUrl . $url), $channel["result"]["path"]);
+        $this->assertTrue(empty($channel["result"]["params"]));
+    }
+
+    public function testUpdateChannelRequests()
     {
         $id = 54;
         $key = "name";
@@ -198,46 +250,40 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
             $key => "channel_test"
         );
         $url = "channel/$id";
-        $urlPost = "channel";
-        $urlByName = "channel_name";
 
-        // Create channel
-        $channel = self::$client->createChannel($params);
-        $this->assertTrue(isset($channel["result"]));
-        $this->assertEquals(self::POST, $channel["result"]["method"]);
-        $this->assertEquals((self::$baseUrl . $urlPost), $channel["result"]["path"]);
-        $this->assertTrue(!empty($channel["result"]["params"]));
-        $this->assertArrayHasKey($key, $channel["result"]["params"]);
-
-        // Get channel
-        $channel = self::$client->getChannel($id);
-        $this->assertTrue(isset($channel["result"]));
-        $this->assertEquals(self::GET, $channel["result"]["method"]);
-        $this->assertEquals((self::$baseUrl . $url), $channel["result"]["path"]);
-        $this->assertTrue(empty($channel["result"]["params"]));
-
-        // Update channel
         $channel = self::$client->updateChannel($id, $params);
         $this->assertTrue(isset($channel["result"]));
         $this->assertEquals(self::PUT, $channel["result"]["method"]);
         $this->assertEquals((self::$baseUrl . $url), $channel["result"]["path"]);
         $this->assertTrue(!empty($channel["result"]["params"]));
         $this->assertArrayHasKey($key, $channel["result"]["params"]);
+    }
 
-        // Delete channel
+    public function testDeleteChannelRequests()
+    {
+        $id = 54;
+        $url = "channel/$id";
+
         $channel = self::$client->deleteChannel($id);
         $this->assertTrue(isset($channel["result"]));
         $this->assertEquals(self::DELETE, $channel["result"]["method"]);
         $this->assertEquals((self::$baseUrl . $url), $channel["result"]["path"]);
         $this->assertTrue(empty($channel["result"]["params"]));
+    }
 
-        // Get channel by name
+    public function testByNameChannelRequests()
+    {
+        $id = 54;
+        $key = "name";
+        $params = array(
+            $key => "channel_test"
+        );
+        $url = "channel_name";
+
         $channel = self::$client->getChannelByName($params);
         $this->assertTrue(isset($channel["result"]));
         $this->assertEquals(self::GET, $channel["result"]["method"]);
-        $this->assertEquals((self::$baseUrl . $urlByName), $channel["result"]["path"]);
-        $this->assertTrue(!empty($channel["result"]["params"]));
-        $this->assertArrayHasKey($key, $channel["result"]["params"]);
+        $this->assertEquals((self::$baseUrl . $url . "?" . http_build_query($params)), $channel["result"]["path"]);
     }
 
     /**
@@ -264,7 +310,39 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(empty($channels["result"]["params"]));
     }
 
-    public function testThemeRequests()
+    public function testCreateThemeRequests()
+    {
+        $id = 32;
+        $key1 = "name";
+        $key2 = "range";
+        $params = array(
+            $key1 => "theme_test",
+            $key2 => "unicast",
+        );
+        $url = "theme";
+
+        $theme = self::$client->createTheme($params);
+        $this->assertTrue(isset($theme["result"]));
+        $this->assertEquals(self::POST, $theme["result"]["method"]);
+        $this->assertEquals((self::$baseUrl . $url), $theme["result"]["path"]);
+        $this->assertTrue(!empty($theme["result"]["params"]));
+        $this->assertArrayHasKey($key1, $theme["result"]["params"]);
+        $this->assertArrayHasKey($key2, $theme["result"]["params"]);
+    }
+
+    public function testGetThemeRequests()
+    {
+        $id = 32;
+        $url = "theme/$id";
+
+        $theme = self::$client->getTheme($id);
+        $this->assertTrue(isset($theme["result"]));
+        $this->assertEquals(self::GET, $theme["result"]["method"]);
+        $this->assertEquals((self::$baseUrl . $url), $theme["result"]["path"]);
+        $this->assertTrue(empty($theme["result"]["params"]));
+    }
+
+    public function testUpdateThemeRequests()
     {
         $id = 32;
         $key1 = "name";
@@ -274,26 +352,7 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
             $key2 => "unicast",
         );
         $url = "theme/$id";
-        $urlPost = "theme";
-        $urlByName = "theme_name";
 
-        // Create theme
-        $theme = self::$client->createTheme($params);
-        $this->assertTrue(isset($theme["result"]));
-        $this->assertEquals(self::POST, $theme["result"]["method"]);
-        $this->assertEquals((self::$baseUrl . $urlPost), $theme["result"]["path"]);
-        $this->assertTrue(!empty($theme["result"]["params"]));
-        $this->assertArrayHasKey($key1, $theme["result"]["params"]);
-        $this->assertArrayHasKey($key2, $theme["result"]["params"]);
-
-        // Get theme
-        $theme = self::$client->getTheme($id);
-        $this->assertTrue(isset($theme["result"]));
-        $this->assertEquals(self::GET, $theme["result"]["method"]);
-        $this->assertEquals((self::$baseUrl . $url), $theme["result"]["path"]);
-        $this->assertTrue(empty($theme["result"]["params"]));
-
-        // Update theme
         $theme = self::$client->updateTheme($id, $params);
         $this->assertTrue(isset($theme["result"]));
         $this->assertEquals(self::PUT, $theme["result"]["method"]);
@@ -301,21 +360,35 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(!empty($theme["result"]["params"]));
         $this->assertArrayHasKey($key1, $theme["result"]["params"]);
         $this->assertArrayHasKey($key2, $theme["result"]["params"]);
+    }
 
-        // Delete theme
+    public function testDeleteThemeRequests()
+    {
+        $id = 32;
+        $url = "theme/$id";
+
         $theme = self::$client->deleteTheme($id);
         $this->assertTrue(isset($theme["result"]));
         $this->assertEquals(self::DELETE, $theme["result"]["method"]);
         $this->assertEquals((self::$baseUrl . $url), $theme["result"]["path"]);
         $this->assertTrue(empty($theme["result"]["params"]));
+    }
+
+    public function testByNameThemeRequests()
+    {
+        $id = 32;
+        $key = "name";
+        $params = array(
+            $key => "theme_test",
+        );
+        $url = "theme/$id";
+        $urlByName = "theme_name";
 
         // Get theme by name
         $theme = self::$client->getThemeByName($params);
         $this->assertTrue(isset($theme["result"]));
         $this->assertEquals(self::GET, $theme["result"]["method"]);
-        $this->assertEquals((self::$baseUrl . $urlByName), $theme["result"]["path"]);
-        $this->assertTrue(!empty($theme["result"]["params"]));
-        $this->assertArrayHasKey($key1, $theme["result"]["params"]);
+        $this->assertEquals((self::$baseUrl . $urlByName . "?" . http_build_query($params)), $theme["result"]["path"]);
     }
 
     /**
@@ -355,7 +428,7 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(empty($themes["result"]["params"]));
     }
 
-    public function testUserPreferenceRequests()
+    public function testCreateUserPreferenceRequests()
     {
         $idUser = 63;
         $idTheme = 12;
@@ -365,30 +438,51 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
         );
         $url = "user/$idUser/preference/$idTheme";
 
-        // Create preference
         $preference = self::$client->createUserPreference($idUser, $idTheme, $params);
         $this->assertTrue(isset($preference["result"]));
         $this->assertEquals(self::POST, $preference["result"]["method"]);
         $this->assertEquals((self::$baseUrl . $url), $preference["result"]["path"]);
         $this->assertTrue(!empty($preference["result"]["params"]));
         $this->assertArrayHasKey($key, $preference["result"]["params"]);
+    }
 
-        // Get preference
+    public function testGetUserPreferenceRequests()
+    {
+        $idUser = 63;
+        $idTheme = 12;
+        $url = "user/$idUser/preference/$idTheme";
+
         $preference = self::$client->getUserPreference($idUser, $idTheme);
         $this->assertTrue(isset($preference["result"]));
         $this->assertEquals(self::GET, $preference["result"]["method"]);
         $this->assertEquals((self::$baseUrl . $url), $preference["result"]["path"]);
         $this->assertTrue(empty($preference["result"]["params"]));
+    }
 
-        // Update preference
+    public function testUpdateUserPreferenceRequests()
+    {
+        $idUser = 63;
+        $idTheme = 12;
+        $key = "option";
+        $params = array(
+            $key => 3,
+        );
+        $url = "user/$idUser/preference/$idTheme";
+
         $preference = self::$client->updateUserPreference($idUser, $idTheme, $params);
         $this->assertTrue(isset($preference["result"]));
         $this->assertEquals(self::PUT, $preference["result"]["method"]);
         $this->assertEquals((self::$baseUrl . $url), $preference["result"]["path"]);
         $this->assertTrue(!empty($preference["result"]["params"]));
         $this->assertArrayHasKey($key, $preference["result"]["params"]);
+    }
 
-        // Delete preference
+    public function testDeleteUserPreferenceRequests()
+    {
+        $idUser = 63;
+        $idTheme = 12;
+        $url = "user/$idUser/preference/$idTheme";
+
         $preference = self::$client->deleteUserPreference($idUser, $idTheme);
         $this->assertTrue(isset($preference["result"]));
         $this->assertEquals(self::DELETE, $preference["result"]["method"]);
@@ -424,28 +518,38 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(empty($preferences["result"]["params"]));
     }
 
-    public function testUserSubscriptionRequests()
+    public function testCreateUserSubscriptionRequests()
+    {
+        $idUser = 876;
+        $idSubscription = 32;
+        $url = "user/$idUser/subscribe/$idSubscription";
+
+        $subscription = self::$client->createUserSubscription($idUser, $idSubscription);
+        $this->assertTrue(isset($subscription["result"]));
+        $this->assertEquals(self::POST, $subscription["result"]["method"]);
+        $this->assertEquals((self::$baseUrl . $url), $subscription["result"]["path"]);
+        $this->assertTrue(empty($subscription["result"]["params"]));
+    }
+
+    public function testGetUserSubscriptionRequests()
     {
         $idUser = 876;
         $idSubscription = 32;
         $url = "user/$idUser/subscribed/$idSubscription";
-        $urlPost = "user/$idUser/subscribe/$idSubscription";
 
-        // Create subscription
-        $subscription = self::$client->createUserSubscription($idUser, $idSubscription);
-        $this->assertTrue(isset($subscription["result"]));
-        $this->assertEquals(self::POST, $subscription["result"]["method"]);
-        $this->assertEquals((self::$baseUrl . $urlPost), $subscription["result"]["path"]);
-        $this->assertTrue(empty($subscription["result"]["params"]));
-
-        // Get subscription
         $subscription = self::$client->getUserSubscription($idUser, $idSubscription);
         $this->assertTrue(isset($subscription["result"]));
         $this->assertEquals(self::GET, $subscription["result"]["method"]);
         $this->assertEquals((self::$baseUrl . $url), $subscription["result"]["path"]);
         $this->assertTrue(empty($subscription["result"]["params"]));
+    }
 
-        // Delete subscription
+    public function testDeleteUserSubscriptionRequests()
+    {
+        $idUser = 876;
+        $idSubscription = 32;
+        $url = "user/$idUser/subscribed/$idSubscription";
+
         $subscription = self::$client->deleteUserSubscription($idUser, $idSubscription);
         $this->assertTrue(isset($subscription["result"]));
         $this->assertEquals(self::DELETE, $subscription["result"]["method"]);
@@ -465,7 +569,40 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(empty($subsctiptions["result"]["params"]));
     }
 
-    public function testSubjectRequests()
+    public function testCreateSubjectRequests()
+    {
+        $id = 54;
+        $key1 = "name";
+        $key2 = "description";
+        $params = array(
+            $key1 => "name_test",
+            $key2 => "description_test"
+        );
+        $url = "subject";
+
+        // Create subject
+        $subject = self::$client->createSubject($params);
+        $this->assertTrue(isset($subject["result"]));
+        $this->assertEquals(self::POST, $subject["result"]["method"]);
+        $this->assertEquals((self::$baseUrl . $url), $subject["result"]["path"]);
+        $this->assertTrue(!empty($subject["result"]["params"]));
+        $this->assertArrayHasKey($key1, $subject["result"]["params"]);
+        $this->assertArrayHasKey($key2, $subject["result"]["params"]);
+    }
+
+    public function testGetSubjectRequests()
+    {
+        $id = 54;
+        $url = "subject/$id";
+
+        $subject = self::$client->getSubject($id);
+        $this->assertTrue(isset($subject["result"]));
+        $this->assertEquals(self::GET, $subject["result"]["method"]);
+        $this->assertEquals((self::$baseUrl . $url), $subject["result"]["path"]);
+        $this->assertTrue(empty($subject["result"]["params"]));
+    }
+
+    public function testUpdateSubjectRequests()
     {
         $id = 54;
         $key1 = "name";
@@ -475,25 +612,7 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
             $key2 => "description_test"
         );
         $url = "subject/$id";
-        $postUrl = "subject";
 
-        // Create subject
-        $subject = self::$client->createSubject($params);
-        $this->assertTrue(isset($subject["result"]));
-        $this->assertEquals(self::POST, $subject["result"]["method"]);
-        $this->assertEquals((self::$baseUrl . $postUrl), $subject["result"]["path"]);
-        $this->assertTrue(!empty($subject["result"]["params"]));
-        $this->assertArrayHasKey($key1, $subject["result"]["params"]);
-        $this->assertArrayHasKey($key2, $subject["result"]["params"]);
-
-        // Get subject
-        $subject = self::$client->getSubject($id);
-        $this->assertTrue(isset($subject["result"]));
-        $this->assertEquals(self::GET, $subject["result"]["method"]);
-        $this->assertEquals((self::$baseUrl . $url), $subject["result"]["path"]);
-        $this->assertTrue(empty($subject["result"]["params"]));
-
-        // Update subject
         $subject = self::$client->updateSubject($id, $params);
         $this->assertTrue(isset($subject["result"]));
         $this->assertEquals(self::PUT, $subject["result"]["method"]);
@@ -501,8 +620,13 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(!empty($subject["result"]["params"]));
         $this->assertArrayHasKey($key1, $subject["result"]["params"]);
         $this->assertArrayHasKey($key2, $subject["result"]["params"]);
+    }
 
-        // Delete subject
+    public function testDeleteSubjectRequests()
+    {
+        $id = 54;
+        $url = "subject/$id";
+
         $subject = self::$client->deleteSubject($id);
         $this->assertTrue(isset($subject["result"]));
         $this->assertEquals(self::DELETE, $subject["result"]["method"]);
