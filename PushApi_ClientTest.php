@@ -28,6 +28,13 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
     protected static $requestManager;
     protected static $client;
 
+    protected static $id = 54;
+    protected static $idTheme = 65;
+    protected static $idSubscription = 42;
+    protected static $idRange = "unicast";
+    protected static $key = "name";
+    protected static $params = ["name" => "app_name_test"];
+
     public static function setUpBeforeClass()
     {
         self::$requestManager = new DummyRequestManager(self::$baseUrl, self::$port);
@@ -63,24 +70,18 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
 
     public function testGetAppRequest()
     {
-        $id = 52;
-        $url = "app/$id";
+        $url = "app/" . self::$id;
 
-        $result = self::$client->getApp($id);
+        $result = self::$client->getApp(self::$id);
         $this->assertGetRequest($result, $url);
     }
 
     public function testUpdateAppRequest()
     {
-        $id = 54;
-        $key = "name";
-        $params = array(
-            $key => "app_name_test",
-        );
-        $url = "app/$id";
+        $url = "app/" . self::$id;
 
-        $result = self::$client->updateApp($id, $params);
-        $this->assertPutRequest($result, $url, $key);
+        $result = self::$client->updateApp(self::$id, self::$params);
+        $this->assertPutRequest($result, $url, self::$key);
     }
 
     /**
@@ -90,54 +91,40 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
      */
     public function testAppForceException()
     {
-        $id = 32;
-
         // Recive an exception
         $params['exception'] = true;
-        $user = self::$client->updateApp($id, $params);
+        $user = self::$client->updateApp(self::$id, $params);
     }
 
     public function testCreateUserRequests()
     {
-        $id = 5;
-        $key = "email";
-        $params = array(
-            $key => "email@test.com"
-        );
         $url = "user";
 
-        $result = self::$client->createUser($params);
-        $this->assertPostRequest($result, $url, $key);
+        $result = self::$client->createUser(self::$params);
+        $this->assertPostRequest($result, $url, self::$key);
     }
 
     public function testGetUserRequests()
     {
-        $id = 1;
-        $url = "user/$id";
+        $url = "user/" . self::$id;
 
-        $result = self::$client->getUser($id);
+        $result = self::$client->getUser(self::$id);
         $this->assertGetRequest($result, $url);
     }
 
     public function testUpdateUserRequests()
     {
-        $id = 2;
-        $key = "email";
-        $params = array(
-            $key => "email@test.com"
-        );
-        $url = "user/$id";
+        $url = "user/" . self::$id;
 
-        $result = self::$client->updateUser($id, $params);
-        $this->assertPutRequest($result, $url, $key);
+        $result = self::$client->updateUser(self::$id, self::$params);
+        $this->assertPutRequest($result, $url, self::$key);
     }
 
     public function testDeleteUserRequests()
     {
-        $id = 3;
-        $url = "user/$id";
+        $url = "user/" . self::$id;
 
-        $result = self::$client->deleteUser($id);
+        $result = self::$client->deleteUser(self::$id);
         $this->assertDeleteRequest($result, $url);
     }
 
@@ -155,14 +142,10 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
 
     public function testCreateUsersRequests()
     {
-        $key = "email";
-        $params = array(
-            $key => "email@test.com,email1@test.com,email2@test.com,email3@test.com"
-        );
         $url = "users";
 
-        $result = self::$client->createUsers($params);
-        $this->assertPostRequest($result, $url, $key);
+        $result = self::$client->createUsers(self::$params);
+        $this->assertPostRequest($result, $url, self::$key);
     }
 
     public function testGetUsersRequests()
@@ -187,59 +170,42 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
 
     public function testCreateChannelRequests()
     {
-        $id = 21;
-        $key = "name";
-        $params = array(
-            $key => "channel_test"
-        );
         $url = "channel";
 
-        $result = self::$client->createChannel($params);
-        $this->assertPostRequest($result, $url, $key);
+        $result = self::$client->createChannel(self::$params);
+        $this->assertPostRequest($result, $url, self::$key);
     }
 
     public function testGetChannelRequests()
     {
-        $id = 31;
-        $url = "channel/$id";
+        $url = "channel/" . self::$id;
 
-        $result = self::$client->getChannel($id);
+        $result = self::$client->getChannel(self::$id);
         $this->assertGetRequest($result, $url);
     }
 
     public function testUpdateChannelRequests()
     {
-        $id = 24;
-        $key = "name";
-        $params = array(
-            $key => "channel_test"
-        );
-        $url = "channel/$id";
+        $url = "channel/" . self::$id;
 
-        $result = self::$client->updateChannel($id, $params);
-        $this->assertPutRequest($result, $url, $key);
+        $result = self::$client->updateChannel(self::$id, self::$params);
+        $this->assertPutRequest($result, $url, self::$key);
     }
 
     public function testDeleteChannelRequests()
     {
-        $id = 35;
-        $url = "channel/$id";
+        $url = "channel/" . self::$id;
 
-        $result = self::$client->deleteChannel($id);
+        $result = self::$client->deleteChannel(self::$id);
         $this->assertDeleteRequest($result, $url);
     }
 
     public function testByNameChannelRequests()
     {
-        $id = 46;
-        $key = "name";
-        $params = array(
-            $key => "channel_test"
-        );
-        $url = "channel_name";
+         $url = "channel_name";
 
-        $result = self::$client->getChannelByName($params);
-        $this->assertGetNameRequest($result, $url, $params);
+        $result = self::$client->getChannelByName(self::$params);
+        $this->assertGetNameRequest($result, $url, self::$params);
     }
 
     /**
@@ -264,59 +230,42 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
 
     public function testCreateThemeRequests()
     {
-        $id = 75;
-        $key = "name";
-        $params = array(
-            $key => "theme_test",
-        );
         $url = "theme";
 
-        $result = self::$client->createTheme($params);
-        $this->assertPostRequest($result, $url, $key);
+        $result = self::$client->createTheme(self::$params);
+        $this->assertPostRequest($result, $url, self::$key);
     }
 
     public function testGetThemeRequests()
     {
-        $id = 86;
-        $url = "theme/$id";
+        $url = "theme/" . self::$id;
 
-        $result = self::$client->getTheme($id);
+        $result = self::$client->getTheme(self::$id);
         $this->assertGetRequest($result, $url);
     }
 
     public function testUpdateThemeRequests()
     {
-        $id = 78;
-        $key = "name";
-        $params = array(
-            $key => "theme_test",
-        );
-        $url = "theme/$id";
+        $url = "theme/" . self::$id;
 
-        $result = self::$client->updateTheme($id, $params);
-        $this->assertPutRequest($result, $url, $key);
+        $result = self::$client->updateTheme(self::$id, self::$params);
+        $this->assertPutRequest($result, $url, self::$key);
     }
 
     public function testDeleteThemeRequests()
     {
-        $id = 67;
-        $url = "theme/$id";
+        $url = "theme/" . self::$id;
 
-        $result = self::$client->deleteTheme($id);
+        $result = self::$client->deleteTheme(self::$id);
         $this->assertDeleteRequest($result, $url);
     }
 
     public function testByNameThemeRequests()
     {
-        $id = 54;
-        $key = "name";
-        $params = array(
-            $key => "theme_test",
-        );
         $url = "theme_name";
 
-        $result = self::$client->getThemeByName($params);
-        $this->assertGetNameRequest($result, $url, $params);
+        $result = self::$client->getThemeByName(self::$params);
+        $this->assertGetNameRequest($result, $url, self::$params);
     }
 
     /**
@@ -342,58 +291,41 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
 
     public function testThemesByRange()
     {
-        $idRange = "unicast";
-        $url = "themes/range/$idRange";
+        $url = "themes/range/" . self::$idRange;
 
-        $result = self::$client->getThemesByRange($idRange);
+        $result = self::$client->getThemesByRange(self::$idRange);
         $this->assertGetRequest($result, $url);
     }
 
     public function testCreateUserPreferenceRequests()
     {
-        $idUser = 28;
-        $idTheme = 27;
-        $key = "option";
-        $params = array(
-            $key => 3,
-        );
-        $url = "user/$idUser/preference/$idTheme";
+        $url = "user/" . self::$id . "/preference/" . self::$idTheme;
 
-        $result = self::$client->createUserPreference($idUser, $idTheme, $params);
-        $this->assertPostRequest($result, $url, $key);
+        $result = self::$client->createUserPreference(self::$id, self::$idTheme, self::$params);
+        $this->assertPostRequest($result, $url, self::$key);
     }
 
     public function testGetUserPreferenceRequests()
     {
-        $idUser = 52;
-        $idTheme = 71;
-        $url = "user/$idUser/preference/$idTheme";
+        $url = "user/" . self::$id . "/preference/" . self::$idTheme;
 
-        $result = self::$client->getUserPreference($idUser, $idTheme);
+        $result = self::$client->getUserPreference(self::$id, self::$idTheme);
         $this->assertGetRequest($result, $url);
     }
 
     public function testUpdateUserPreferenceRequests()
     {
-        $idUser = 32;
-        $idTheme = 54;
-        $key = "option";
-        $params = array(
-            $key => 3,
-        );
-        $url = "user/$idUser/preference/$idTheme";
+        $url = "user/" . self::$id . "/preference/" . self::$idTheme;
 
-        $result = self::$client->updateUserPreference($idUser, $idTheme, $params);
-        $this->assertPutRequest($result, $url, $key);
+        $result = self::$client->updateUserPreference(self::$id, self::$idTheme, self::$params);
+        $this->assertPutRequest($result, $url, self::$key);
     }
 
     public function testDeleteUserPreferenceRequests()
     {
-        $idUser = 63;
-        $idTheme = 12;
-        $url = "user/$idUser/preference/$idTheme";
+        $url = "user/" . self::$id . "/preference/" . self::$idTheme;
 
-        $result = self::$client->deleteUserPreference($idUser, $idTheme);
+        $result = self::$client->deleteUserPreference(self::$id, self::$idTheme);
         $this->assertDeleteRequest($result, $url);
     }
 
@@ -404,104 +336,81 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
      */
     public function testUserPreferenceForceException()
     {
-        $idUser = 12;
-        $idTheme = 78;
-
         // Recive an exception
         $params['exception'] = true;
-        $user = self::$client->updateUserPreference($idUser, $idTheme, $params);
+        $user = self::$client->updateUserPreference(self::$id, self::$idTheme, $params);
     }
 
     public function testUserPreferencesRequest()
     {
-        $idUser = 234;
-        $url = "user/$idUser/preferences";
+        $url = "user/" . self::$id . "/preferences";
 
         // Get themes
-        $result = self::$client->getUserPreferences($idUser);
+        $result = self::$client->getUserPreferences(self::$id);
         $this->assertGetRequest($result, $url);
     }
 
     public function testCreateUserSubscriptionRequests()
     {
-        $idUser = 876;
-        $idSubscription = 32;
-        $url = "user/$idUser/subscribe/$idSubscription";
+        $url = "user/" . self::$id . "/subscribe/" . self::$idSubscription;
 
-        $result = self::$client->createUserSubscription($idUser, $idSubscription);
+        $result = self::$client->createUserSubscription(self::$id, self::$idSubscription);
         $this->assertPostRequest($result, $url);
     }
 
     public function testGetUserSubscriptionRequests()
     {
-        $idUser = 453;
-        $idSubscription = 54;
-        $url = "user/$idUser/subscribed/$idSubscription";
+        $url = "user/" . self::$id . "/subscribed/" . self::$idSubscription;
 
-        $result = self::$client->getUserSubscription($idUser, $idSubscription);
+        $result = self::$client->getUserSubscription(self::$id, self::$idSubscription);
         $this->assertGetRequest($result, $url);
     }
 
     public function testDeleteUserSubscriptionRequests()
     {
-        $idUser = 23;
-        $idSubscription = 32;
-        $url = "user/$idUser/subscribed/$idSubscription";
+        $url = "user/" . self::$id . "/subscribed/" . self::$idSubscription;
 
-        $result = self::$client->deleteUserSubscription($idUser, $idSubscription);
+        $result = self::$client->deleteUserSubscription(self::$id, self::$idSubscription);
         $this->assertDeleteRequest($result, $url);
     }
 
     public function testUserSubscriptionsRequest()
     {
-        $idUser = 76;
-        $url = "user/$idUser/subscribed";
+        $url = "user/" . self::$id . "/subscribed";
 
-        $result = self::$client->getUserSubscriptions($idUser);
+        $result = self::$client->getUserSubscriptions(self::$id);
         $this->assertGetRequest($result, $url);
     }
 
     public function testCreateSubjectRequests()
     {
-        $id = 45;
-        $key = "name";
-        $params = array(
-            $key => "name_test",
-        );
         $url = "subject";
 
-        $result = self::$client->createSubject($params);
-        $this->assertPostRequest($result, $url, $key);
+        $result = self::$client->createSubject(self::$params);
+        $this->assertPostRequest($result, $url, self::$key);
     }
 
     public function testGetSubjectRequests()
     {
-        $id = 34;
-        $url = "subject/$id";
+        $url = "subject/" . self::$id;
 
-        $result = self::$client->getSubject($id);
+        $result = self::$client->getSubject(self::$id);
         $this->assertGetRequest($result, $url);
     }
 
     public function testUpdateSubjectRequests()
     {
-        $id = 67;
-        $key = "name";
-        $params = array(
-            $key => "name_test",
-        );
-        $url = "subject/$id";
+        $url = "subject/" . self::$id;
 
-        $result = self::$client->updateSubject($id, $params);
-        $this->assertPutRequest($result, $url, $key);
+        $result = self::$client->updateSubject(self::$id, self::$params);
+        $this->assertPutRequest($result, $url, self::$key);
     }
 
     public function testDeleteSubjectRequests()
     {
-        $id = 65;
-        $url = "subject/$id";
+        $url = "subject/" . self::$id;
 
-        $result = self::$client->deleteSubject($id);
+        $result = self::$client->deleteSubject(self::$id);
         $this->assertDeleteRequest($result, $url);
     }
 
@@ -519,7 +428,6 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
 
     public function testSubjectsRequest()
     {
-        $idUser = 41;
         $url = "subjects";
 
         $result = self::$client->getSubjects();
@@ -528,15 +436,11 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
 
     public function testSendRequest()
     {
-        $key = "theme";
-        $params = array(
-            $key => "newsletter_test",
-        );
         $url = "send";
 
         // Send notification
-        $result = self::$client->sendNotification($params);
-        $this->assertPostRequest($result, $url, $key);
+        $result = self::$client->sendNotification(self::$params);
+        $this->assertPostRequest($result, $url, self::$key);
     }
 
     /**
