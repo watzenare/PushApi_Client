@@ -213,6 +213,8 @@ class CurlRequestManager implements IRequestManager
         curl_setopt($ch, CURLOPT_URL, $this->getBaseUrl() . $path);
         curl_setopt($ch, CURLOPT_PORT, $this->getPort());
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        // Setting timeout that throws exception when the PushApi is down
+        curl_setopt($ch, CURLOPT_TIMEOUT, 2000);
 
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
 
