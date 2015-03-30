@@ -267,8 +267,20 @@ class CurlRequestManager implements IRequestManager
         unset($headers[0]);
         $sortedHeaders = array();
         foreach($headers as $line) {
-            list($key, $val) = explode(':', $line, 2);
-            $sortedHeaders[$key] = trim($val);
+            if (empty(trim($line))) {
+                continue;
+            }
+
+            $explodedHeader = explode(':', $line, 2);
+            
+            if (sizeof($explodedHeader) > 1) {
+                $key = $explodedHeader[0];
+                $value = $explodedHeader[1];
+                $sortedHeaders[$key] = trim($value);
+            } else {
+                $value = $explodedHeader[0];
+                $sortedHeaders[] = trim($value);
+            }
         }
         
         if ($curlHeaders["http_code"] != self::HTTP_RESPONSE_OK) {
