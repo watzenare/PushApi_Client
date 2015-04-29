@@ -238,6 +238,24 @@ class PushApi_Client
         return $this->requestManager;
     }
 
+    /**
+     * Sets the method of the transmission wanted (synchronous or asynchronous) to the RequestManager
+     * @param string $method
+     */
+    public function setTransmission($method)
+    {
+        $this->requestManager->setTransmission($method);
+    }
+
+    /**
+     * Gets the transmission method by the RequestManager
+     * @return string
+     */
+    public function getTransmission()
+    {
+        return $this->requestManager->getTransmission();
+    }
+
 
     ///////////////////////////////////////////////
     //              PUSH API CALLS               //

@@ -2,7 +2,7 @@
 
 namespace RequestManagers;
 
-use \RequestManagers\IRequestManager;
+use \RequestManagers\RequestManager;
 
 /**
  * @author Eloi Ballarà Madrid <eloi@tviso.com>
@@ -12,172 +12,13 @@ use \RequestManagers\IRequestManager;
  * with the PushApi and retrieves the server response, also handles the errors that could occur
  * during the connection and are thrown as an exception.
  */
-class CurlRequestManager implements IRequestManager
+class CurlRequestManager extends RequestManager
 {
-    /**
-     * Main calls that support the PushApi
-     */
-    const GET = "GET";
-    const PUT = "PUT";
-    const POST = "POST";
-    const DELETE = "DELETE";
-
-    /**
-     * HTTP headers and content
-     */
-    const HEADER_APP_ID = "X-App-Id: ";
-    const HEADER_APP_AUTH = "X-App-Auth: ";
-    const HEADER_CONTENT_TYPE = "Content-Type: ";
-    const X_WWW_FORM_URLENCODED = "application/x-www-form-urlencoded";
-
     /**
      * HTTP response codes
      */
     const HTTP_RESPONSE_OK = 200;
 
-    /**
-     * The host where the API is running
-     * @var string
-     */
-    private $baseUrl;
-
-    /**
-     * The port where the API is running
-     * @var integer
-     */
-    private $port;
-
-    /**
-     * Displays the data sent/received to/from the server
-     * @var bool
-     */
-    private $verbose = false;
-
-    /**
-     * Agent app identification
-     * @var integer
-     */
-    private $appId;
-
-    /**
-     * Agent app authentication
-     * @var string
-     */
-    private $appAuth;
-
-
-    /**
-     * It is needed the $host {@link $baseUrl} and port {@link $port} of the PushApi
-     * in order to establish the connection successfully when needed.
-     *
-     * @param string  $baseUrl   The host where the API is running
-     * @param integer $port      The port where the API is running
-     */
-    function __construct($baseUrl, $port)
-    {
-        $this->setBaseUrl($baseUrl);
-        $this->setPort($port);
-    }
-
-
-    /////////////////////////////////////////////////////////////////
-    //               MAIN CLASS GETTERS AND SETTERS                //
-    /////////////////////////////////////////////////////////////////
-
-    /**
-     * Sets the base url
-     * @param string $url
-     */
-    public function setBaseUrl($url)
-    {
-        $this->baseUrl = $url;
-    }
-
-    /**
-     * Returns the base url
-     * @return string
-     */
-    public function getBaseUrl()
-    {
-        return $this->baseUrl;
-    }
-
-    /**
-     * Sets the port
-     * @param integer $port
-     */
-    public function setPort($port)
-    {
-        $this->port = $port;
-    }
-
-    /**
-     * Returns the port
-     * @return integer
-     */
-    public function getPort()
-    {
-        return $this->port;
-    }
-
-    /**
-     * Sets the verbose
-     * @param boolean $verbose
-     */
-    public function setVerbose($verbose)
-    {
-        $this->verbose = $verbose;
-    }
-
-    /**
-     * Returns the app auth
-     * @return boolean
-     */
-    public function getVerbose()
-    {
-        return $this->verbose;
-    }
-
-    /**
-     * Sets the app identification
-     * @param integer $appId
-     */
-    public function setAppId($appId)
-    {
-        $this->appId = $appId;
-    }
-
-    /**
-     * Returns the app identification
-     * @return integer
-     */
-    public function getAppId()
-    {
-        return $this->appId;
-    }
-
-    /**
-     * Sets the app auth
-     * @param string $appAuth
-     */
-    public function setAppAuth($appAuth)
-    {
-        $this->appAuth = $appAuth;
-    }
-
-    /**
-     * Returns the app auth
-     * @return string
-     */
-    public function getAppAuth()
-    {
-        return $this->appAuth;
-    }
-
-
-    ///////////////////////////////////////////////////////
-    //               MAIN FUNCTIONALITIES                //
-    ///////////////////////////////////////////////////////
 
     /**
      * Sends a call to the PushApi and retrieves the result.
@@ -187,7 +28,8 @@ class CurlRequestManager implements IRequestManager
      * @return array Response key => value array
      *
      * @throws Exception If onnection failed
-     */    public function sendRequest($method, $path, $params = [])
+     */
+    public function sendRequest($method, $path, $params = [])
     {
         if (empty($this->getAppId()) || empty($this->getAppAuth())) {
             throw new \Exception("RequestManager has no app params set", -2);
@@ -201,7 +43,7 @@ class CurlRequestManager implements IRequestManager
 
         // Preparing HTTP connection
         $ch = curl_init();
- 
+
         if ($method == self::POST || $method == self::PUT) {
             array_push($headers, self::HEADER_CONTENT_TYPE . self::X_WWW_FORM_URLENCODED);
         }
@@ -214,7 +56,7 @@ class CurlRequestManager implements IRequestManager
         curl_setopt($ch, CURLOPT_PORT, $this->getPort());
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         // Setting timeout that throws exception when the PushApi is down
-        curl_setopt($ch, CURLOPT_TIMEOUT, 2000);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 500);
 
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
 
@@ -222,7 +64,7 @@ class CurlRequestManager implements IRequestManager
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_VERBOSE, $this->getVerbose());
         curl_setopt($ch, CURLOPT_HEADER, true);
- 
+
         // Disabling SSL Certificate support temporarly
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
@@ -235,7 +77,7 @@ class CurlRequestManager implements IRequestManager
         if ($curlResponse === false) {
             throw new \Exception("Connection failed: " . curl_error($ch), -2);
         }
- 
+
         // Closing the HTTP connection
         curl_close($ch);
 
@@ -272,7 +114,7 @@ class CurlRequestManager implements IRequestManager
             }
 
             $explodedHeader = explode(':', $line, 2);
-            
+
             if (sizeof($explodedHeader) > 1) {
                 $key = $explodedHeader[0];
                 $value = $explodedHeader[1];
@@ -282,7 +124,7 @@ class CurlRequestManager implements IRequestManager
                 $sortedHeaders[] = trim($value);
             }
         }
-        
+
         if ($curlHeaders["http_code"] != self::HTTP_RESPONSE_OK) {
             throw new \Exception($sortedHeaders["X-Status-Reason"], $curlHeaders["http_code"]);
         } else {
