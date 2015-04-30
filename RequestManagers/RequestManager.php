@@ -5,6 +5,10 @@ namespace RequestManagers;
 /**
  * @author Eloi Ballarà Madrid <eloi@tviso.com>
  * @license http://www.opensource.org/licenses/mit-license.php The MIT License
+ *
+ * Contains the basic attributes and functionalities implemented required by the RequestManager interface,
+ * it means that every dedicated RequestManager will must only implement the send functionality that it is
+ * the most important one.
  */
 abstract class RequestManager implements IRequestManager
 {
