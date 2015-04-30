@@ -2,6 +2,8 @@
 
 namespace RequestManagers;
 
+use \RequestManagers\IRequestManager;
+
 /**
  * @author Eloi Ballarà Madrid <eloi@tviso.com>
  * @license http://www.opensource.org/licenses/mit-license.php The MIT License
