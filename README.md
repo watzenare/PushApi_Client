@@ -31,10 +31,11 @@ require "vendor/autoload.php";
 use \RequestManagers\CurlRequestManager;
 
 $requestManager = new CurlRequestManager("http://my_uri.com/", 8080);
-$test = new PushApi_Client(1, "my_app", "my_secret", $requestManager);
+$client = new PushApi_Client("my_app_id", "my_app_name", "my_secret", $requestManager);
 
 try {
-	$user = $test->getUser(1);
+    $userId = 1;
+	$user = $client->getUser($userId);
 	echo $user['result']['email'] . "\n";
 } catch (Exception $e) {
 	echo "Exception - " . $e->getMessage() . "\n";
@@ -46,9 +47,9 @@ try {
 The Request Managers are objects that implement sending functions that lets the Client to send calls and receive responses. Currently
 there are two Request Managers but only one can be used for this use because the other one is used for tests:
 
-- Dummy Request Manager, it is used in order to get the Client calls, check if it is working correctly and it simulates a request response with the client information.
-- Curl Request Manager, it uses the PHP Curl method in order to generate and receive the calls to/from the PushApi.
-- **NEW** [Guzzle](https://github.com/guzzle/guzzle) Request Manager, it uses Guzzle functionalities in order to generate and receive the calls to/from the PushApi.
+- **Dummy** Request Manager, it is used in order to get the Client calls, check if it is working correctly and it simulates a request response with the client information.
+- **Curl** Request Manager, it uses the PHP Curl method in order to generate/receive the calls to/from the PushApi.
+- **|NEW|** - **[Guzzle](https://github.com/guzzle/guzzle)** Request Manager, it uses Guzzle functionalities in order to generate/receive the calls to/from the PushApi.
 
 
 ## Support

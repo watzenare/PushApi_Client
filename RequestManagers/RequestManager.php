@@ -23,10 +23,15 @@ abstract class RequestManager implements IRequestManager
     /**
      * HTTP headers and content
      */
-    const HEADER_APP_ID = "X-App-Id:";
-    const HEADER_APP_AUTH = "X-App-Auth:";
-    const HEADER_CONTENT_TYPE = "Content-Type:";
+    const HEADER_APP_ID = "X-App-Id";
+    const HEADER_APP_AUTH = "X-App-Auth";
+    const HEADER_CONTENT_TYPE = "Content-Type";
     const X_WWW_FORM_URLENCODED = "application/x-www-form-urlencoded";
+
+    /**
+     * HTTP response codes
+     */
+    const HTTP_RESPONSE_OK = 200;
 
     /**
      * Type of the transmission

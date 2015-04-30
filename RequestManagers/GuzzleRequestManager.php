@@ -1,7 +1,5 @@
 <?php
 
-require 'vendor/autoload.php';
-
 namespace RequestManagers;
 
 use GuzzleHttp\Client;
@@ -21,7 +19,8 @@ class GuzzleRequestManager extends RequestManager
      * The Guzzer Client
      * @var Object
      */
-    private $sender;
+
+    private $client;
 
     /**
      * It is initializated the Guzzer Client with some basic params
@@ -33,8 +32,7 @@ class GuzzleRequestManager extends RequestManager
         $baseRequestParams = [
             'base_url' => $baseUrl,
         ];
-        $sender = new Client($baseRequestParams);
-        $sender->setPort($port);
+        $this->client = new Client($baseRequestParams);
     }
 
 
@@ -58,26 +56,40 @@ class GuzzleRequestManager extends RequestManager
                 self::HEADER_APP_ID => $this->getAppId(),
                 self::HEADER_APP_AUTH => $this->getAppAuth(),
             ],
+            'debug' => $this->getVerbose(),
+            'exceptions' => $this->getVerbose()
         ];
 
         // Check if the call must be done synchronous or asynchronous
-        if ($this->getTransmision() == self::ASYNC) {
+        if ($this->getTransmission() == self::ASYNC) {
             $requestOptions['future'] = true;
         }
 
         if ($method == self::POST || $method == self::PUT) {
-            $headers['headers'][self::HEADER_CONTENT_TYPE] = self::X_WWW_FORM_URLENCODED;
+            $requestOptions['headers'][self::HEADER_CONTENT_TYPE] = self::X_WWW_FORM_URLENCODED;
+            $requestOptions['body'] = $params;
         }
 
         // Preparing the request
-        $request = $this->sender->createRequest($method, $path, $requestOptions);
+        $request = $this->client->createRequest($method, $path, $requestOptions);
+        $request->setPort($this->getPort());
 
         // Making the request
-        $response = $this->sender->send($request);
-        // $response = $this->sender->send($request)->then(function ($response) {
-        //     echo 'I completed! ' . $response;
-        // });
-
-        return $response;
+        if ($this->getTransmission() == self::ASYNC) {
+            $response = $this->client->send($request)->then(function ($response) {
+                if ($response->getStatusCode() == self::HTTP_RESPONSE_OK) {
+                    return $response->json();
+                } else {
+                    throw new \Exception($response->getReasonPhrase(), $response->getStatusCode());
+                }
+            });
+        } else {
+            $response = $this->client->send($request);
+            if ($response->getStatusCode() == self::HTTP_RESPONSE_OK) {
+                return $response->json();
+            } else {
+                throw new \Exception($response->getReasonPhrase(), $response->getStatusCode());
+            }
+        }
     }
 }

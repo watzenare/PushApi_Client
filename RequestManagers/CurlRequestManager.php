@@ -15,12 +15,6 @@ use \RequestManagers\RequestManager;
 class CurlRequestManager extends RequestManager
 {
     /**
-     * HTTP response codes
-     */
-    const HTTP_RESPONSE_OK = 200;
-
-
-    /**
      * Sends a call to the PushApi and retrieves the result.
      * @param  string $method HTTP method of the request
      * @param  string $path   The path that must be added to the base url in order to get the right API call
@@ -37,8 +31,8 @@ class CurlRequestManager extends RequestManager
 
         // Preparing HTTP headers
         $headers = array(
-            self::HEADER_APP_ID . $this->getAppId(),
-            self::HEADER_APP_AUTH . $this->getAppAuth()
+            self::HEADER_APP_ID. ": " . $this->getAppId(),
+            self::HEADER_APP_AUTH. ": " . $this->getAppAuth()
         );
 
         // Preparing HTTP connection
@@ -125,10 +119,10 @@ class CurlRequestManager extends RequestManager
             }
         }
 
-        if ($curlHeaders["http_code"] != self::HTTP_RESPONSE_OK) {
-            throw new \Exception($sortedHeaders["X-Status-Reason"], $curlHeaders["http_code"]);
-        } else {
+        if ($curlHeaders["http_code"] == self::HTTP_RESPONSE_OK) {
             return json_decode($responseBody, true);
+        } else {
+            throw new \Exception($sortedHeaders["X-Status-Reason"], $curlHeaders["http_code"]);
         }
     }
 }
