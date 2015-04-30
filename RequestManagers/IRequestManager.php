@@ -20,10 +20,14 @@ interface IRequestManager
     public function getBaseUrl();
     public function setPort($port);
     public function getPort();
+    public function setVerbose($verbose);
+    public function getVerbose();
     public function setAppId($appId);
     public function getAppId();
     public function setAppAuth($appAuth);
     public function getAppAuth();
+    public function setTransmission($method);
+    public function getTransmission();
 
     /**
      * The main send functionality that connects directly with the PushApi and retrives the response data
