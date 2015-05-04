@@ -19,7 +19,6 @@ class GuzzleRequestManager extends RequestManager
      * The Guzzer Client
      * @var Object
      */
-
     private $client;
 
     /**
