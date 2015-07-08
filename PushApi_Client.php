@@ -32,6 +32,7 @@
  * @method deleteUser($idUser)  Deletes an specific $idUser
  * @method getUsers()  Retrieves information about all registered users
  * @method createUsers($params)  Creates multiple users given its emails
+ * @method getUserSmartphones($idUser)  Retrives the smartphones that user has registered
  *
  * User Subscriptions:
  * @method getUserSubscription($idUser, $idChannel)  Gets the specific $idUser subscription given a specific $idChannel
@@ -347,6 +348,16 @@ class PushApi_Client
     public function createUsers($params)
     {
         return $this->users(self::POST, $params);
+    }
+
+    /**
+     * Retrives the smartphones that user has registered
+     * @param  integer  $idUser  User identification value
+     * @return array  Response key => value array
+     */
+    public function getUserSmartphones($idUser)
+    {
+        return $this->userSmartphones(self::GET, $idUser);
     }
 
 
@@ -738,6 +749,25 @@ class PushApi_Client
             }
             $url .= "/$idUser";
             return $request->sendRequest($method, $url, $params);
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), $e->getCode());
+        }
+    }
+
+    /**
+     * Prepares the API call given the different possibilities (depending on the $method)
+     * @param  string  $method  HTTP method of the request
+     * @param  integer  $idUser  User identification value
+     * @return array  Response key => value array
+     *
+     * @throws Exception  If [There aren't required ids set]
+     */
+    private function userSmartphones($method, $idUser)
+    {
+        $url = "user/$idUser/smartphones";
+        $request = $this->getRequestManager();
+        try {
+            return $request->sendRequest($method, $url);
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), $e->getCode());
         }

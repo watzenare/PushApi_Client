@@ -9,6 +9,8 @@ use \RequestManagers\DummyRequestManager;
  * Client tester that checks if the requests done by the Client contain the right values. It simulates the calls
  * that the Client can do and cheks the fake response. Also it is checked if the Client throws exceptions when
  * the RequestManager throw.
+ *
+ * phpunit --bootstrap vendor/autoload.php PushApi_ClientTest.php
  */
 class PushApi_ClientTest extends PHPUnit_Framework_TestCase
 {
@@ -126,6 +128,14 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
 
         $result = self::$client->deleteUser(self::$id);
         $this->assertDeleteRequest($result, $url);
+    }
+
+    public function testGetUserSmartphonesRequests()
+    {
+        $url = "user/" . self::$id . "/smartphones";
+
+        $result = self::$client->getUserSmartphones(self::$id);
+        $this->assertGetRequest($result, $url);
     }
 
     /**
