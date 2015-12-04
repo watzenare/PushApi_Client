@@ -46,31 +46,31 @@ abstract class RequestManager implements IRequestManager
     const ASYNC = "async"; // asynchronous
 
     /**
-     * The host where the API is running
+     * The host where the API is running.
      * @var string
      */
     protected $baseUrl;
 
     /**
-     * The port where the API is running
+     * The port where the API is running.
      * @var integer
      */
     protected $port;
 
     /**
-     * Displays the data sent/received to/from the server
+     * Displays the data sent/received to/from the server.
      * @var bool
      */
     protected $verbose = false;
 
     /**
-     * Agent app identification
+     * Agent app identification.
      * @var integer
      */
     protected $appId;
 
     /**
-     * Agent app authentication
+     * Agent app authentication.
      * @var string
      */
     protected $appAuth;
@@ -106,7 +106,7 @@ abstract class RequestManager implements IRequestManager
     /////////////////////////////////////////////////////////////////
 
     /**
-     * Sets the base url
+     * Sets the base url.
      * @param string $url
      */
     public function setBaseUrl($url)
@@ -115,7 +115,7 @@ abstract class RequestManager implements IRequestManager
     }
 
     /**
-     * Returns the base url
+     * Returns the base url.
      * @return string
      */
     public function getBaseUrl()
@@ -124,7 +124,7 @@ abstract class RequestManager implements IRequestManager
     }
 
     /**
-     * Sets the port
+     * Sets the port.
      * @param integer $port
      */
     public function setPort($port)
@@ -133,7 +133,7 @@ abstract class RequestManager implements IRequestManager
     }
 
     /**
-     * Returns the port
+     * Returns the port.
      * @return integer
      */
     public function getPort()
@@ -142,7 +142,7 @@ abstract class RequestManager implements IRequestManager
     }
 
     /**
-     * Sets the verbose
+     * Sets the verbose.
      * @param boolean $verbose
      */
     public function setVerbose($verbose)
@@ -151,7 +151,7 @@ abstract class RequestManager implements IRequestManager
     }
 
     /**
-     * Returns the app auth
+     * Returns the app auth.
      * @return boolean
      */
     public function getVerbose()
@@ -160,7 +160,7 @@ abstract class RequestManager implements IRequestManager
     }
 
     /**
-     * Sets the app identification
+     * Sets the app identification.
      * @param integer $appId
      */
     public function setAppId($appId)
@@ -169,7 +169,7 @@ abstract class RequestManager implements IRequestManager
     }
 
     /**
-     * Returns the app identification
+     * Returns the app identification.
      * @return integer
      */
     public function getAppId()
@@ -178,7 +178,7 @@ abstract class RequestManager implements IRequestManager
     }
 
     /**
-     * Sets the app auth
+     * Sets the app auth.
      * @param string $appAuth
      */
     public function setAppAuth($appAuth)
@@ -187,7 +187,7 @@ abstract class RequestManager implements IRequestManager
     }
 
     /**
-     * Returns the app auth
+     * Returns the app auth.
      * @return string
      */
     public function getAppAuth()
@@ -196,7 +196,7 @@ abstract class RequestManager implements IRequestManager
     }
 
     /**
-     * Sets the transmission method that will be used
+     * Sets the transmission method that will be used.
      * @param string $method
      */
     public function setTransmission($method)
@@ -205,7 +205,7 @@ abstract class RequestManager implements IRequestManager
     }
 
     /**
-     * Gets the transmission method
+     * Gets the transmission method.
      * @return string
      */
     public function getTransmission()
@@ -217,10 +217,10 @@ abstract class RequestManager implements IRequestManager
      * Sends a call to the PushApi and retrieves the result.
      * @param  string $method HTTP method of the request
      * @param  string $path   The path that must be added to the base url in order to get the right API call
-     * @param  array $params  Array with the required params as keys (used with PUT && POST mothod)
+     * @param  array $params  Array with the required params as keys (used with PUT && POST method)
      * @return array Response key => value array
      *
-     * @throws Exception If onnection failed
+     * @throws Exception If connection failed
      */
     abstract public function sendRequest($method, $path, $params = []);
 }

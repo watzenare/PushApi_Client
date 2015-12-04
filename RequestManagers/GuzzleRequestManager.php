@@ -16,13 +16,13 @@ use \RequestManagers\RequestManager;
 class GuzzleRequestManager extends RequestManager
 {
     /**
-     * The Guzzer Client
+     * The Guzzle Client
      * @var Object
      */
     private $client;
 
     /**
-     * It is initializated the Guzzer Client with some basic params
+     * It is initialized the Guzzer Client with some basic params
      */
     function __construct($baseUrl, $port)
     {
@@ -39,10 +39,10 @@ class GuzzleRequestManager extends RequestManager
      * Sends a call to the PushApi and retrieves the result.
      * @param  string $method HTTP method of the request
      * @param  string $path   The path that must be added to the base url in order to get the right API call
-     * @param  array $params  Array with the required params as keys (used with PUT && POST mothod)
+     * @param  array $params  Array with the required params as keys (used with PUT && POST method)
      * @return array Response key => value array
      *
-     * @throws Exception If onnection failed
+     * @throws Exception If connection failed
      */
     public function sendRequest($method, $path, $params = [])
     {
@@ -66,6 +66,9 @@ class GuzzleRequestManager extends RequestManager
 
         if ($method == self::POST || $method == self::PUT) {
             $requestOptions['headers'][self::HEADER_CONTENT_TYPE] = self::X_WWW_FORM_URLENCODED;
+        }
+
+        if (!empty($params)) {
             $requestOptions['body'] = $params;
         }
 
@@ -75,7 +78,7 @@ class GuzzleRequestManager extends RequestManager
 
         // Making the request
         if ($this->getTransmission() == self::ASYNC) {
-            $response = $this->client->send($request)->then(function ($response) {
+            $this->client->send($request)->then(function ($response) {
                 if ($response->getStatusCode() == self::HTTP_RESPONSE_OK) {
                     return $response->json();
                 } else {

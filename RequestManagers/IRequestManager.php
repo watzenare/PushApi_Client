@@ -30,7 +30,7 @@ interface IRequestManager
     public function getTransmission();
 
     /**
-     * The main send functionality that connects directly with the PushApi and retrives the response data
+     * The main send functionality that connects directly with the PushApi and retrieves the response data
      */
     public function sendRequest($method, $url, $params);
 }

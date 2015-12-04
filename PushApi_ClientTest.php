@@ -7,7 +7,7 @@ use \RequestManagers\DummyRequestManager;
  * @license http://www.opensource.org/licenses/mit-license.php The MIT License
  *
  * Client tester that checks if the requests done by the Client contain the right values. It simulates the calls
- * that the Client can do and cheks the fake response. Also it is checked if the Client throws exceptions when
+ * that the Client can do and checks the fake response. Also it is checked if the Client throws exceptions when
  * the RequestManager throw.
  *
  * phpunit --bootstrap vendor/autoload.php PushApi_ClientTest.php
@@ -88,12 +88,12 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
 
     /**
      * @expectedException           Exception
-     * @expectedExceptionMessage    I'm a Dummmy Exception
+     * @expectedExceptionMessage    I'm a Dummy Exception
      * @expectedExceptionCode       0
      */
     public function testAppForceException()
     {
-        // Recive an exception
+        // Receive an exception
         $params['exception'] = true;
         $user = self::$client->updateApp(self::$id, $params);
     }
@@ -140,12 +140,12 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
 
     /**
      * @expectedException           Exception
-     * @expectedExceptionMessage    I'm a Dummmy Exception
+     * @expectedExceptionMessage    I'm a Dummy Exception
      * @expectedExceptionCode       0
      */
     public function testUserForceException()
     {
-        // Recive an exception
+        // Receive an exception
         $params['exception'] = true;
         $user = self::$client->createUser($params);
     }
@@ -168,12 +168,12 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
 
     /**
      * @expectedException           Exception
-     * @expectedExceptionMessage    I'm a Dummmy Exception
+     * @expectedExceptionMessage    I'm a Dummy Exception
      * @expectedExceptionCode       0
      */
     public function testUsersForceException()
     {
-        // Recive an exception
+        // Receive an exception
         $params['exception'] = true;
         $user = self::$client->createUsers($params);
     }
@@ -220,12 +220,12 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
 
     /**
      * @expectedException           Exception
-     * @expectedExceptionMessage    I'm a Dummmy Exception
+     * @expectedExceptionMessage    I'm a Dummy Exception
      * @expectedExceptionCode       0
      */
     public function testChannelForceException()
     {
-        // Recive an exception
+        // Receive an exception
         $params['exception'] = true;
         $channel = self::$client->createChannel($params);
     }
@@ -280,12 +280,12 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
 
     /**
      * @expectedException           Exception
-     * @expectedExceptionMessage    I'm a Dummmy Exception
+     * @expectedExceptionMessage    I'm a Dummy Exception
      * @expectedExceptionCode       0
      */
     public function testThemeForceException()
     {
-        // Recive an exception
+        // Receive an exception
         $params['exception'] = true;
         $theme = self::$client->createTheme($params);
     }
@@ -341,12 +341,12 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
 
     /**
      * @expectedException           Exception
-     * @expectedExceptionMessage    I'm a Dummmy Exception
+     * @expectedExceptionMessage    I'm a Dummy Exception
      * @expectedExceptionCode       0
      */
     public function testUserPreferenceForceException()
     {
-        // Recive an exception
+        // Receive an exception
         $params['exception'] = true;
         $user = self::$client->updateUserPreference(self::$id, self::$idTheme, $params);
     }
@@ -426,12 +426,12 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
 
     /**
      * @expectedException           Exception
-     * @expectedExceptionMessage    I'm a Dummmy Exception
+     * @expectedExceptionMessage    I'm a Dummy Exception
      * @expectedExceptionCode       0
      */
     public function testSubjectForceException()
     {
-        // Recive an exception
+        // Receive an exception
         $params['exception'] = true;
         $subject = self::$client->createSubject($params);
     }
@@ -455,12 +455,12 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
 
     /**
      * @expectedException           Exception
-     * @expectedExceptionMessage    I'm a Dummmy Exception
+     * @expectedExceptionMessage    I'm a Dummy Exception
      * @expectedExceptionCode       0
      */
     public function testSendForceException()
     {
-        // Recive an exception
+        // Receive an exception
         $params['exception'] = true;
         $send = self::$client->sendNotification($params);
     }
