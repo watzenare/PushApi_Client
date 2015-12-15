@@ -11,7 +11,7 @@ In your composer.json file just add the latest stable version of the Client (see
 
     {
         "require": {
-            "pushapi/client-php": "1.*"
+            "pushapi/client-php": "2.*"
         }
     }
 

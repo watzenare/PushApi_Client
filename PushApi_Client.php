@@ -26,53 +26,56 @@
  * updateApp($idApp, $params) Updates the information of the specific $idApp
  *
  * USER METHODS:
- * getUser($idUser)  Gets the specific $idUser information
- * createUser($params)  Creates an user given $params information
- * updateUser($idUser, $params)  Updates a specific $idUser given its $params
- * deleteUser($idUser)  Deletes an specific $idUser
- * getUsers()  Retrieves information about all registered users
- * createUsers($params)  Creates multiple users given its emails
- * getUserSmartphones($idUser)  Retrieves the smartphones that user has registered
+ * getUser($idUser)  /user/$idUser
+ * createUser($params)  /user
+ * deleteUser($idUser)  /user/$idUser
+ * addUserDevice($idUser, $params)  /user/$idUser/device
+ * getUserDeviceByReference($idUser, $params)  /user/$idUser/device
+ * getUserDevice($idUser, $idDevice)  /user/$idUser/device/$idDevice
+ * deleteUserDevice($idUser, $idDevice)  /user/$idUser/device/$idDevice
+ * getUsers()  /users
+ * createUsers($params)  /users
+ * getUserSmartphones($idUser)  /user/$idUser/smartphones
  *
  * USER SUBSCRIPTIONS METHODS:
- * getUserSubscription($idUser, $idChannel)  Gets the specific $idUser subscription given a specific $idChannel
- * createUserSubscription($idUser, $idChannel)  Sets a subscription to a specific $idUser from a specific $idChannel given $params information
- * deleteUserSubscription($idUser, $idChannel)  Unsubscribes a specific $idUser from a specific $idChannel
- * getUserSubscriptions($idUser)  Retrieves information about all $idUser subscriptions
+ * getUserSubscription($idUser, $idChannel)  /user/$idUser/subscribe/$idChannel
+ * createUserSubscription($idUser, $idChannel)  /user/$idUser/subscribe/$idChannel
+ * deleteUserSubscription($idUser, $idChannel)  /user/$idUser/subscribe/$idChannel
+ * getUserSubscriptions($idUser)  /user/$idUser/subscribed
  *
  * USER PREFERENCES METHODS:
- * getUserPreference($idUser, $idTheme)  Gets the specific $idUser preference given a specific $idTheme
- * createUserPreference($idUser, $idTheme, $params)  Sets a preference to a specific $idUser from a specific $idTheme given $params information
- * updateUserPreference($idUser, $idTheme, $params)  Updates a specific $idTheme preference from a specific $idUser given its $params
- * deleteUserPreference($idUser, $idTheme)  Unsets a specific $idUser preference from a specific $idTheme
- * getUserPreferences($idUser)  Retrieves information about all $idUser preferences
+ * getUserPreference($idUser, $idTheme)  /user/$idUser/preference/$idTheme
+ * createUserPreference($idUser, $idTheme, $params)  /user/$idUser/preference/$idTheme
+ * updateUserPreference($idUser, $idTheme, $params)  /user/$idUser/preference/$idTheme
+ * deleteUserPreference($idUser, $idTheme)  /user/$idUser/preference/$idTheme
+ * getUserPreferences($idUser)  /user/$idUser/preferences
  *
  * CHANNEL METHODS:
- * getChannel($idChannel)  Gets the specific $idChannel information
- * createChannel($params)  Creates a channel given $params information
- * updateChannel($idChannel, $params)  Updates a specific $idChannel given its $params
- * deleteChannel($idChannel)  Deletes a specific $idChannel
- * getChannels()  Retrieves information about all registered channels
- * getChannelByName($params)  Gets the specific channel given its name
+ * getChannel($idChannel)  /channel/$idChannel
+ * createChannel($params) /channel
+ * updateChannel($idChannel, $params)  /channel/$idChannel
+ * deleteChannel($idChannel)  /channel/$idChannel
+ * getChannels($params)  /channels
+ * getChannelByName($params)  /channel_name
  *
  * THEME METHODS:
- * getTheme($idTheme)  Gets the specific $idTheme information
- * createTheme($params)  Creates a theme given $params information
- * updateTheme($idTheme, $params)  Updates a specific $idTheme given its $params
- * deleteTheme($idTheme)  Deletes a specific $idTheme
- * getThemes()  Retrieves information about all registered themes
- * getThemesByRange($range)  Retrieves information about all registered themes by specific $range
- * getThemeByName($params)  Gets the specific theme given its name
+ * getTheme($idTheme)  /theme/$idTheme
+ * createTheme($params)  /theme
+ * updateTheme($idTheme, $params)  /theme/$idTheme
+ * deleteTheme($idTheme)  /theme/$idTheme
+ * getThemes($params)  /themes
+ * getThemesByRange($range)  /themes/range/$range
+ * getThemeByName($params)  /theme_name
  *
  * SUBJECT METHODS:
- * getSubject($idSubject)  Gets the specific $idSubject information
- * createSubject($params)  Creates a subject given $params information
- * updateSubject($idSubject, $params)  Updates a specific $idSubject given its $params
- * deleteSubject($idSubject)  Deletes a specific $idSubject
- * getSubjects()  Retrieves information about all registered subjects
+ * getSubject($idSubject)  /subject/$idSubject
+ * createSubject($params)  /subject
+ * updateSubject($idSubject, $params)  /subject/$idSubject
+ * deleteSubject($idSubject)  /subject/$idSubject
+ * getSubjects()  /subjects
  *
  * SEND METHODS:
- * sendNotification($params)  Sends a notification to the target specified into the $params
+ * sendNotification($params)  /send
  */
 class PushApi_Client
 {
@@ -291,7 +294,7 @@ class PushApi_Client
     //      USER CALLS       //
     ///////////////////////////
     /**
-     * Gets the specific $idUser information.
+     * Gets the specific $idUser information
      * @param  integer  $idUser  User identification value
      * @return array  Response key => value array
      */
@@ -311,17 +314,6 @@ class PushApi_Client
     }
 
     /**
-     * Updates a specific $idUser given its $params.
-     * @param  integer  $idUser  User identification value
-     * @param  array  $params  Array with the required params as keys (used with PUT && POST method)
-     * @return array  Response key => value array
-     */
-    public function updateUser($idUser, $params)
-    {
-        return $this->user(self::PUT, $idUser, $params);
-    }
-
-    /**
      * Deletes an specific $idUser.
      * @param  integer  $idUser  User identification value
      * @return array  Response key => value array
@@ -329,6 +321,50 @@ class PushApi_Client
     public function deleteUser($idUser)
     {
         return $this->user(self::DELETE, $idUser);
+    }
+
+    /**
+     * Creates a device given the reference given by params.
+     * @param  integer  $idUser  User identification value.
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST method).
+     * @return array  Response key => value array
+     */
+    public function addUserDevice($idUser, $params)
+    {
+        return $this->device(self::POST, $idUser, false, $params);
+    }
+
+    /**
+     * Retrieves the user device information given its reference by params.
+     * @param  integer  $idUser  User identification value.
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST method).
+     * @return array  Response key => value array
+     */
+    public function getUserDeviceByReference($idUser, $params)
+    {
+        return $this->device(self::GET, $idUser, false, $params);
+    }
+
+    /**
+     * Retrieves the user device information given its $idDevice.
+     * @param  integer  $idUser  User identification value.
+     * @param  integer  $idDevice  Device identification value.
+     * @return array  Response key => value array
+     */
+    public function getUserDevice($idUser, $idDevice)
+    {
+        return $this->device(self::GET, $idUser, $idDevice);
+    }
+
+    /**
+     * Deletes an specific $idDevice.
+     * @param  integer  $idUser  User identification value.
+     * @param  integer  $idDevice  Device identification value.
+     * @return array  Response key => value array
+     */
+    public function deleteUserDevice($idUser, $idDevice)
+    {
+        return $this->device(self::DELETE, $idUser, $idDevice);
     }
 
     /**
@@ -342,7 +378,7 @@ class PushApi_Client
 
     /**
      * Creates multiple users given its emails.
-     * @param  array  $params  Array with the required params as keys (used with PUT && POST method)
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST method).
      * @return array  Response key => value array
      */
     public function createUsers($params)
@@ -352,7 +388,7 @@ class PushApi_Client
 
     /**
      * Retrieves the smartphones that user has registered.
-     * @param  integer  $idUser  User identification value
+     * @param  integer  $idUser  User identification value.
      * @return array  Response key => value array
      */
     public function getUserSmartphones($idUser)
@@ -366,7 +402,7 @@ class PushApi_Client
     //////////////////////////////
     /**
      * Gets the specific $idChannel information.
-     * @param  integer  $idChannel  Channel identification value
+     * @param  integer  $idChannel  Channel identification value.
      * @return array  Response key => value array
      */
     public function getChannel($idChannel)
@@ -376,7 +412,7 @@ class PushApi_Client
 
     /**
      * Creates an channel given $params information.
-     * @param  array  $params  Array with the required params as keys (used with PUT && POST method)
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST method).
      * @return array  Response key => value array
      */
     public function createChannel($params)
@@ -386,8 +422,8 @@ class PushApi_Client
 
     /**
      * Updates a specific $idChannel given its $params.
-     * @param  integer  $idChannel  Channel identification value
-     * @param  array  $params  Array with the required params as keys (used with PUT && POST method)
+     * @param  integer  $idChannel  Channel identification value.
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST method).
      * @return array  Response key => value array
      */
     public function updateChannel($idChannel, $params)
@@ -397,7 +433,7 @@ class PushApi_Client
 
     /**
      * Deletes an specific $idChannel.
-     * @param  integer  $idChannel  Channel identification value
+     * @param  integer  $idChannel  Channel identification value.
      * @return array  Response key => value array
      */
     public function deleteChannel($idChannel)
@@ -409,14 +445,14 @@ class PushApi_Client
      * Retrieves information about all registered channels.
      * @return array  Response key => value array
      */
-    public function getChannels()
+    public function getChannels($params)
     {
-        return $this->channels(self::GET);
+        return $this->channels(self::GET, $params);
     }
 
     /**
      * Gets the specific channel given its name.
-     * @param  array  $params  Channel identification value
+     * @param  array  $params  Channel identification value.
      * @return array  Response key => value array
      */
     public function getChannelByName($params)
@@ -430,7 +466,7 @@ class PushApi_Client
     ////////////////////////////
     /**
      * Gets the specific $idTheme information.
-     * @param  integer  $idTheme  Theme identification value
+     * @param  integer  $idTheme  Theme identification value.
      * @return array  Response key => value array
      */
     public function getTheme($idTheme)
@@ -440,7 +476,7 @@ class PushApi_Client
 
     /**
      * Creates an theme given $params information.
-     * @param  array  $params  Array with the required params as keys (used with PUT && POST method)
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST method).
      * @return array  Response key => value array
      */
     public function createTheme($params)
@@ -450,8 +486,8 @@ class PushApi_Client
 
     /**
      * Updates a specific $idTheme given its $params.
-     * @param  integer  $idTheme  Theme identification value
-     * @param  array  $params  Array with the required params as keys (used with PUT && POST method)
+     * @param  integer  $idTheme  Theme identification value.
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST method).
      * @return array  Response key => value array
      */
     public function updateTheme($idTheme, $params)
@@ -461,7 +497,7 @@ class PushApi_Client
 
     /**
      * Deletes an specific $idTheme.
-     * @param  integer  $idTheme  Theme identification value
+     * @param  integer  $idTheme  Theme identification value.
      * @return array  Response key => value array
      */
     public function deleteTheme($idTheme)
@@ -473,24 +509,24 @@ class PushApi_Client
      * Retrieves information about all registered themes.
      * @return array  Response key => value array
      */
-    public function getThemes()
+    public function getThemes($params)
     {
-        return $this->themes(self::GET);
+        return $this->themes(self::GET, $params);
     }
 
     /**
      * Retrieves information about all registered themes by specific $range.
-     * @param  string  $range The range that a theme can have
+     * @param  string  $range The range that a theme can have.
      * @return array  Response key => value array
      */
-    public function getThemesByRange($range)
+    public function getThemesByRange($range, $params)
     {
-        return $this->themesByRange(self::GET, $range);
+        return $this->themesByRange(self::GET, $range, $params);
     }
 
     /**
      * Gets the specific theme given its name.
-     * @param  array  $params  Theme identification value
+     * @param  array  $params  Theme identification value.
      * @return array  Response key => value array
      */
     public function getThemeByName($params)
@@ -504,7 +540,7 @@ class PushApi_Client
     //////////////////////////////
     /**
      * Gets the specific $idSubject information.
-     * @param  integer  $idSubject  Subject identification value
+     * @param  integer  $idSubject  Subject identification value.
      * @return array  Response key => value array
      */
     public function getSubject($idSubject)
@@ -514,7 +550,7 @@ class PushApi_Client
 
     /**
      * Creates an subject given $params information.
-     * @param  array  $params  Array with the required params as keys (used with PUT && POST method)
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST method).
      * @return array  Response key => value array
      */
     public function createSubject($params)
@@ -524,8 +560,8 @@ class PushApi_Client
 
     /**
      * Updates a specific $idSubject given its $params.
-     * @param  integer  $idSubject  Subject identification value
-     * @param  array  $params  Array with the required params as keys (used with PUT && POST method)
+     * @param  integer  $idSubject  Subject identification value.
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST method).
      * @return array  Response key => value array
      */
     public function updateSubject($idSubject, $params)
@@ -547,9 +583,9 @@ class PushApi_Client
      * Retrieves information about all registered subjects.
      * @return array  Response key => value array
      */
-    public function getSubjects()
+    public function getSubjects($params)
     {
-        return $this->subjects(self::GET);
+        return $this->subjects(self::GET, $params);
     }
 
 
@@ -558,8 +594,8 @@ class PushApi_Client
     ///////////////////////////////////
     /**
      * Gets the specific $idUser subscription given a specific $idChannel.
-     * @param  integer  $idUser  User identification value
-     * @param  integer  $idChannel  Channel identification value
+     * @param  integer  $idUser  User identification value.
+     * @param  integer  $idChannel  Channel identification value.
      * @return array  Response key => value array
      */
     public function getUserSubscription($idUser, $idChannel)
@@ -569,8 +605,8 @@ class PushApi_Client
 
     /**
      * Sets a subscription to a specific $idUser from a specific $idChannel given $params information.
-     * @param  integer  $idUser  User identification value
-     * @param  integer  $idChannel  Channel identification value
+     * @param  integer  $idUser  User identification value.
+     * @param  integer  $idChannel  Channel identification value.
      * @return array  Response key => value array
      */
     public function createUserSubscription($idUser, $idChannel)
@@ -580,8 +616,8 @@ class PushApi_Client
 
     /**
      * Unsubscribes a specific $idUser from a specific $idChannel.
-     * @param  integer  $idUser  User identification value
-     * @param  integer  $idChannel  Channel identification value
+     * @param  integer  $idUser  User identification value.
+     * @param  integer  $idChannel  Channel identification value.
      * @return array  Response key => value array
      */
     public function deleteUserSubscription($idUser, $idChannel)
@@ -591,7 +627,7 @@ class PushApi_Client
 
     /**
      * Retrieves information about all $idUser subscriptions.
-     * @param  integer  $idUser  User identification value
+     * @param  integer  $idUser  User identification value.
      * @return array  Response key => value array
      */
     public function getUserSubscriptions($idUser)
@@ -605,8 +641,8 @@ class PushApi_Client
     /////////////////////////////////
     /**
      * Gets the specific $idUser preference given a specific $idTheme.
-     * @param  integer  $idUser  User identification value
-     * @param  integer  $idTheme  Theme identification value
+     * @param  integer  $idUser  User identification value.
+     * @param  integer  $idTheme  Theme identification value.
      * @return array  Response key => value array
      */
     public function getUserPreference($idUser, $idTheme)
@@ -616,9 +652,9 @@ class PushApi_Client
 
     /**
      * Sets a preference to a specific $idUser from a specific $idTheme given $params information.
-     * @param  integer  $idUser  User identification value
-     * @param  integer  $idTheme  Theme identification value
-     * @param  array  $params  Array with the required params as keys (used with PUT && POST method)
+     * @param  integer  $idUser  User identification value.
+     * @param  integer  $idTheme  Theme identification value.
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST method).
      * @return array  Response key => value array
      */
     public function createUserPreference($idUser, $idTheme, $params)
@@ -628,9 +664,9 @@ class PushApi_Client
 
     /**
      * Updates a specific $idTheme preference from a specific $idUser given its $params.
-     * @param  integer  $idUser  User identification value
-     * @param  integer  $idTheme  Theme identification value
-     * @param  array  $params  Array with the required params as keys (used with PUT && POST method)
+     * @param  integer  $idUser  User identification value.
+     * @param  integer  $idTheme  Theme identification value.
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST method).
      * @return array  Response key => value array
      */
     public function updateUserPreference($idUser, $idTheme, $params)
@@ -639,9 +675,9 @@ class PushApi_Client
     }
 
     /**
-     * Unsets a specific $idUser preference from a specific $idTheme.
-     * @param  integer  $idUser  User identification value
-     * @param  integer  $idTheme  Theme identification value
+     * Unset a specific $idUser preference from a specific $idTheme.
+     * @param  integer  $idUser  User identification value.
+     * @param  integer  $idTheme  Theme identification value.
      * @return array  Response key => value array
      */
     public function deleteUserPreference($idUser, $idTheme)
@@ -651,7 +687,7 @@ class PushApi_Client
 
     /**
      * Retrieves information about all $idUser preferences.
-     * @param  integer  $idUser  User identification value
+     * @param  integer  $idUser  User identification value.
      * @return array  Response key => value array
      */
     public function getUserPreferences($idUser)
@@ -665,7 +701,7 @@ class PushApi_Client
     //////////////////////////
     /**
      * Sends a notification to the target specified into the $params.
-     * @param  array  $params  Array with the required params as keys (used with PUT && POST method)
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST method).
      * @return array  Response key => value array
      */
     public function sendNotification($params)
@@ -676,14 +712,14 @@ class PushApi_Client
 
 
     ///////////////////////////////////////////////////////////////////////////////
-    //              PRIVATED FUNCTIONALITIES WITH THE CLIENT LOGIC               //
+    //              PRIVATE FUNCTIONALITIES WITH THE CLIENT LOGIC               //
     ///////////////////////////////////////////////////////////////////////////////
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method).
-     * @param  string  $method  HTTP method of the request
-     * @param  integer  $idApp   App identification
-     * @param  array  $params  Array with the required params as keys (used with PUT && POST method)
+     * @param  string  $method  HTTP method of the request.
+     * @param  integer  $idApp   App identification.
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST method).
      * @return array  Response key => value array
      *
      * @example $params PUT content: ["name" => "new_name"]
@@ -703,16 +739,13 @@ class PushApi_Client
         }
 
         if (!isset($idApp)) {
-            throw new Exception("Url can't be created, expecting referer id", 3);
+            throw new Exception("Url can't be created, expecting referrer id", 3);
         }
 
         $url = "app/$idApp";
         $request = $this->getRequestManager();
         try {
-            if ($method == self::PUT) {
-                return $request->sendRequest($method, $url, $params);
-            }
-            return $request->sendRequest($method, $url);
+            return $request->sendRequest($method, $url, $params);
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), $e->getCode());
         }
@@ -720,9 +753,9 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method).
-     * @param  string  $method  HTTP method of the request
-     * @param  integer  $idUser  User identification value
-     * @param  array  $params  Array with the required params as keys (used with PUT && POST method)
+     * @param  string  $method  HTTP method of the request.
+     * @param  integer  $idUser  User identification value.
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST method).
      * @return array  Response key => value array
      *
      * @example $params  POST  content: ["email" => "a@a.com"]
@@ -733,21 +766,62 @@ class PushApi_Client
      */
     private function user($method, $idUser, $params = [])
     {
-        if (($method == self::POST || $method == self::PUT) && empty($params)) {
+        if (($method == self::POST) && empty($params)) {
             throw new Exception("Trying to add data without params", 2);
         }
 
         if ($method != self::POST && !isset($idUser)) {
-            throw new Exception("Url can't be created, expecting referer id", 3);
+            throw new Exception("Url can't be created, expecting referrer id", 3);
         }
 
         $url = "user";
         $request = $this->getRequestManager();
         try {
-            if ($method == self::POST) {
-                return $request->sendRequest($method, $url, $params);
+            if ($method != self::POST) {
+                $url .= "/$idUser";
             }
-            $url .= "/$idUser";
+            return $request->sendRequest($method, $url, $params);
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), $e->getCode());
+        }
+    }
+
+    /**
+     * @param  string  $method  HTTP method of the request.
+     * @param  integer  $idUser  User identification value.
+     * @param  integer|false $idDevice  Device identification value.
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST method).
+     * @return array  Response key => value array
+     *
+     * @example $params POST content: ["android" => "XXXX-XXX-XXX-XXXX-X", "ios" => "Z-ZZ-ZZZ-ZZ-Z"]
+     *
+     * @throws Exception  If [No @param $params are set]
+     * @throws Exception  If [There aren't required ids set]
+     */
+    private function device($method, $idUser, $idDevice = false, $params = [])
+    {
+        if (($method == self::POST) && empty($params)) {
+            throw new Exception("Trying to add data without params", 2);
+        }
+
+        if (!isset($idUser)) {
+            throw new Exception("Url can't be created, expecting user referrer id", 3);
+        }
+
+        if (($method == self::GET && $idDevice == false) && empty($params)) {
+            throw new Exception("Search cannot be done without params", 4);
+        }
+
+        if ($method == self::DELETE && $idDevice == false) {
+            throw new Exception("Url can't be created, expecting device referrer id", 3);
+        }
+
+        $url = "user/$idUser/device";
+        $request = $this->getRequestManager();
+        try {
+            if (($method == self::GET || $method == self::DELETE) && $idDevice) {
+                $url .= "/$idDevice";
+            }
             return $request->sendRequest($method, $url, $params);
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), $e->getCode());
@@ -756,8 +830,8 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method).
-     * @param  string  $method  HTTP method of the request
-     * @param  integer  $idUser  User identification value
+     * @param  string  $method  HTTP method of the request.
+     * @param  integer  $idUser  User identification value.
      * @return array  Response key => value array
      *
      * @throws Exception  If [There aren't required ids set]
@@ -775,8 +849,8 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method).
-     * @param  string  $method  HTTP method of the request
-     * @param  array  $params  Array with the required params as keys (used with PUT && POST method)
+     * @param  string  $method  HTTP method of the request.
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST method).
      * @return array  Response key => value array
      *
      * @example $params  POST  content: ["emails" => "a@a.com,b@b.com,c@c.com"]
@@ -797,10 +871,7 @@ class PushApi_Client
         $url = "users";
         $request = $this->getRequestManager();
         try {
-            if ($method == self::POST) {
-                return $request->sendRequest($method, $url, $params);
-            }
-            return $request->sendRequest($method, $url);
+            return $request->sendRequest($method, $url, $params);
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), $e->getCode());
         }
@@ -808,9 +879,9 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method).
-     * @param  string  $method  HTTP method of the request
-     * @param  integer  $idChannel  Channel identification value
-     * @param  array  $params  Array with the required params as keys (used with PUT && POST method)
+     * @param  string  $method  HTTP method of the request.
+     * @param  integer  $idChannel  Channel identification value.
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST method).
      * @return array  Response key => value array
      *
      * @example $params POST & PUT content: ["name" => "channel_name"]
@@ -825,16 +896,15 @@ class PushApi_Client
         }
 
         if ($method != self::POST && !isset($idChannel)) {
-            throw new Exception("Url can't be created, expecting referer id", 3);
+            throw new Exception("Url can't be created, expecting referrer id", 3);
         }
 
         $url = "channel";
         $request = $this->getRequestManager();
         try {
-            if ($method == self::POST) {
-                return $request->sendRequest($method, $url, $params);
+            if ($method != self::POST) {
+                $url .= "/$idChannel";
             }
-            $url .= "/$idChannel";
             return $request->sendRequest($method, $url, $params);
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), $e->getCode());
@@ -843,12 +913,12 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method).
-     * @param  string  $method  HTTP method of the request
+     * @param  string  $method  HTTP method of the request.
      * @return array  Response key => value array
      *
      * @throws Exception  If [Invalid @param $method set]
      */
-    private function channels($method)
+    private function channels($method, $params = [])
     {
         if ($method == self::POST || $method == self::PUT || $method == self::DELETE) {
             throw new Exception("Invalid call method", 1);
@@ -857,7 +927,7 @@ class PushApi_Client
         $url = "channels";
         $request = $this->getRequestManager();
         try {
-            return $request->sendRequest($method, $url);
+            return $request->sendRequest($method, $url, $params);
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), $e->getCode());
         }
@@ -865,14 +935,14 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method).
-     * @param  string  $method  HTTP method of the request
-     * @param  array  $params  Array with the required params as keys (used with PUT && POST method)
+     * @param  string  $method  HTTP method of the request.
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST method).
      * @return array  Response key => value array
      *
      * @throws Exception  If [Invalid @param $method set]
      * @throws Exception  If [There aren't required ids set]
      */
-    private function channelByName($method, $params)
+    private function channelByName($method, $params = [])
     {
         if ($method != self::GET) {
             throw new Exception("Invalid call method", 1);
@@ -893,9 +963,9 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method).
-     * @param  string  $method  HTTP method of the request
-     * @param  integer  $idTheme  Theme identification value
-     * @param  array  $params  Array with the required params as keys (used with PUT && POST method)
+     * @param  string  $method  HTTP method of the request.
+     * @param  integer  $idTheme  Theme identification value.
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST method).
      * @return array  Response key => value array
      *
      * @example $params POST & PUT content: ["name" => "theme_name", "range" => "unicast"]
@@ -910,16 +980,15 @@ class PushApi_Client
         }
 
         if ($method != self::POST && !isset($idTheme)) {
-            throw new Exception("Url can't be created, expecting referer id", 3);
+            throw new Exception("Url can't be created, expecting referrer id", 3);
         }
 
         $url = "theme";
         $request = $this->getRequestManager();
         try {
-            if ($method == self::POST) {
-                return $request->sendRequest($method, $url, $params);
+            if ($method != self::POST) {
+                $url .= "/$idTheme";
             }
-            $url .= "/$idTheme";
             return $request->sendRequest($method, $url, $params);
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), $e->getCode());
@@ -928,12 +997,12 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method).
-     * @param  string  $method  HTTP method of the request
+     * @param  string  $method  HTTP method of the request.
      * @return array  Response key => value array
      *
      * @throws Exception  If [Invalid @param $method set]
      */
-    private function themes($method)
+    private function themes($method, $params = [])
     {
         if ($method == self::POST || $method == self::PUT || $method == self::DELETE) {
             throw new Exception("Invalid call method", 1);
@@ -942,7 +1011,7 @@ class PushApi_Client
         $url = "themes";
         $request = $this->getRequestManager();
         try {
-            return $request->sendRequest($method, $url);
+            return $request->sendRequest($method, $url, $params);
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), $e->getCode());
         }
@@ -950,27 +1019,27 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method).
-     * @param  string  $method  HTTP method of the request
-     * @param  string  $range The range value that a theme can have
+     * @param  string  $method  HTTP method of the request.
+     * @param  string  $range The range value that a theme can have.
      * @return array  Response key => value array
      *
      * @throws Exception  If [Invalid @param $method set]
      * @throws Exception  If [There aren't required ids set]
      */
-    private function themesByRange($method, $range)
+    private function themesByRange($method, $range, $params = [])
     {
         if ($method == self::POST || $method == self::PUT || $method == self::DELETE) {
             throw new Exception("Invalid call method", 1);
         }
 
         if (!isset($range)) {
-            throw new Exception("Url can't be created, expecting referer id", 3);
+            throw new Exception("Url can't be created, expecting referrer id", 3);
         }
 
         $url = "themes/range/$range";
         $request = $this->getRequestManager();
         try {
-            return $request->sendRequest($method, $url);
+            return $request->sendRequest($method, $url, $params);
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), $e->getCode());
         }
@@ -978,14 +1047,14 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method).
-     * @param  string  $method  HTTP method of the request
-     * @param  array  $params  Array with the required params as keys (used with PUT && POST method)
+     * @param  string  $method  HTTP method of the request.
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST method).
      * @return array  Response key => value array
      *
      * @throws Exception  If [Invalid @param $method set]
      * @throws Exception  If [There aren't required ids set]
      */
-    private function themeByName($method, $params)
+    private function themeByName($method, $params = [])
     {
         if ($method != self::GET) {
             throw new Exception("Invalid call method", 1);
@@ -1006,9 +1075,9 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method).
-     * @param  string  $method  HTTP method of the request
-     * @param  integer  $idSubject  Subject identification value
-     * @param  array  $params  Array with the required params as keys (used with PUT && POST method)
+     * @param  string  $method  HTTP method of the request.
+     * @param  integer  $idSubject  Subject identification value.
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST method).
      * @return array  Response key => value array
      *
      * @example $params POST & PUT content: ["theme_name" => "name_theme", "description" => "this is a description example"]
@@ -1023,16 +1092,15 @@ class PushApi_Client
         }
 
         if ($method != self::POST && !isset($idSubject)) {
-            throw new Exception("Url can't be created, expecting referer id", 3);
+            throw new Exception("Url can't be created, expecting referrer id", 3);
         }
 
         $url = "subject";
         $request = $this->getRequestManager();
         try {
-            if ($method == self::POST) {
-                return $request->sendRequest($method, $url, $params);
+            if ($method != self::POST) {
+                $url .= "/$idSubject";
             }
-            $url .= "/$idSubject";
             return $request->sendRequest($method, $url, $params);
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), $e->getCode());
@@ -1041,12 +1109,12 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method).
-     * @param  string  $method  HTTP method of the request
+     * @param  string  $method  HTTP method of the request.
      * @return array  Response key => value array
      *
      * @throws Exception  If [Invalid @param $method set]
      */
-    private function subjects($method)
+    private function subjects($method, $params = [])
     {
         if ($method == self::POST || $method == self::PUT || $method == self::DELETE) {
             throw new Exception("Invalid call method", 1);
@@ -1055,7 +1123,7 @@ class PushApi_Client
         $url = "subjects";
         $request = $this->getRequestManager();
         try {
-            return $request->sendRequest($method, $url);
+            return $request->sendRequest($method, $url, $params);
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), $e->getCode());
         }
@@ -1063,8 +1131,8 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method).
-     * @param  integer  $idUser  User identification value
-     * @param  integer  $idChannel  Channel identification value
+     * @param  integer  $idUser  User identification value.
+     * @param  integer  $idChannel  Channel identification value.
      * @return array  Response key => value array
      *
      * @throws Exception  If [Invalid @param $method set]
@@ -1077,16 +1145,15 @@ class PushApi_Client
         }
 
         if (!isset($idUser) || !isset($idChannel)) {
-            throw new Exception("Url can't be created, expecting referer id", 3);
+            throw new Exception("Url can't be created, expecting referrer id", 3);
         }
 
         $url = "user/$idUser/subscribe/$idChannel";
         $request = $this->getRequestManager();
         try {
-            if ($method == self::POST) {
-                return $request->sendRequest($method, $url);
+            if ($method != self::POST) {
+                $url = "user/$idUser/subscribed/$idChannel";
             }
-            $url = "user/$idUser/subscribed/$idChannel";
             return $request->sendRequest($method, $url);
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), $e->getCode());
@@ -1095,7 +1162,7 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method).
-     * @param  integer  $idUser  User identification value
+     * @param  integer  $idUser  User identification value.
      * @return array  Response key => value array
      *
      * @throws Exception  If [Invalid @param $method set]
@@ -1108,7 +1175,7 @@ class PushApi_Client
         }
 
         if (!isset($idUser)) {
-            throw new Exception("Url can't be created, expecting referer id", 3);
+            throw new Exception("Url can't be created, expecting referrer id", 3);
         }
 
         $url = "user/$idUser/subscribed";
@@ -1122,10 +1189,10 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method).
-     * @param  string  $method  HTTP method of the request
-     * @param  integer  $idUser  User identification value
-     * @param  integer  $idTheme  Theme identification value
-     * @param  array  $params  Array with the required params as keys (used with PUT && POST method)
+     * @param  string  $method  HTTP method of the request.
+     * @param  integer  $idUser  User identification value.
+     * @param  integer  $idTheme  Theme identification value.
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST method).
      * @return array  Response key => value array
      *
      * @example $params  POST  content: ["option" => 2]
@@ -1140,16 +1207,13 @@ class PushApi_Client
         }
 
         if (!isset($idUser) || !isset($idTheme)) {
-            throw new Exception("Url can't be created, expecting referer id", 3);
+            throw new Exception("Url can't be created, expecting referrer id", 3);
         }
 
         $url = "user/$idUser/preference/$idTheme";
         $request = $this->getRequestManager();
         try {
-            if ($method == self::POST || $method == self::PUT) {
-                return $request->sendRequest($method, $url, $params);
-            }
-            return $request->sendRequest($method, $url);
+            return $request->sendRequest($method, $url, $params);
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), $e->getCode());
         }
@@ -1157,8 +1221,8 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method).
-     * @param  string  $method  HTTP method of the request
-     * @param  integer  $idUser  User identification value
+     * @param  string  $method  HTTP method of the request.
+     * @param  integer  $idUser  User identification value.
      * @return array  Response key => value array
      *
      * @throws Exception  If [Invalid @param $method set]
@@ -1171,7 +1235,7 @@ class PushApi_Client
         }
 
         if (!isset($idUser)) {
-            throw new Exception("Url can't be created, expecting referer id", 3);
+            throw new Exception("Url can't be created, expecting referrer id", 3);
         }
 
         $url = "user/$idUser/preferences";
@@ -1185,8 +1249,8 @@ class PushApi_Client
 
     /**
      * Prepares the API call given the different possibilities (depending on the $method).
-     * @param  string  $method  HTTP method of the request
-     * @param  array  $params  Array with the required params as keys (used with PUT && POST method)
+     * @param  string  $method  HTTP method of the request.
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST method).
      * @return array  Response key => value array
      *
      * @example $params  POST  content: ["theme" => "theme_name", "message" => "Message notification"]
