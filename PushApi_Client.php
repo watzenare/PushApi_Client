@@ -72,7 +72,7 @@
  * createSubject($params)  /subject
  * updateSubject($idSubject, $params)  /subject/$idSubject
  * deleteSubject($idSubject)  /subject/$idSubject
- * getSubjects()  /subjects
+ * getSubjects($params)  /subjects
  *
  * SEND METHODS:
  * sendNotification($params)  /send
