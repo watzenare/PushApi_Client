@@ -33,7 +33,7 @@
  * getUserDeviceByReference($idUser, $params)  /user/$idUser/device
  * getUserDevice($idUser, $idDevice)  /user/$idUser/device/$idDevice
  * deleteUserDevice($idUser, $idDevice)  /user/$idUser/device/$idDevice
- * getUsers()  /users
+ * getUsers($params)  /users
  * createUsers($params)  /users
  * getUserSmartphones($idUser)  /user/$idUser/smartphones
  *
@@ -371,9 +371,9 @@ class PushApi_Client
      * Retrieves information about all registered users.
      * @return array  Response key => value array
      */
-    public function getUsers()
+    public function getUsers($params)
     {
-        return $this->users(self::GET);
+        return $this->users(self::GET, $params);
     }
 
     /**

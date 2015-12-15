@@ -22,7 +22,7 @@ class GuzzleRequestManager extends RequestManager
     private $client;
 
     /**
-     * It is initialized the Guzzer Client with some basic params
+     * It is initialized the Guzzler Client with some basic params
      */
     function __construct($baseUrl, $port)
     {
@@ -66,10 +66,13 @@ class GuzzleRequestManager extends RequestManager
 
         if ($method == self::POST || $method == self::PUT) {
             $requestOptions['headers'][self::HEADER_CONTENT_TYPE] = self::X_WWW_FORM_URLENCODED;
+            $requestOptions['body'] = $params;
+
         }
 
-        if (!empty($params)) {
-            $requestOptions['body'] = $params;
+        // When method is GET request, params should be added with a different array key
+        if (!empty($params) && $method == self::GET) {
+            $requestOptions['query'] = $params;
         }
 
         // Preparing the request
