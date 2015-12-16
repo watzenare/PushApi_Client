@@ -49,6 +49,7 @@
  * updateUserPreference($idUser, $idTheme, $params)  /user/$idUser/preference/$idTheme
  * deleteUserPreference($idUser, $idTheme)  /user/$idUser/preference/$idTheme
  * getUserPreferences($idUser)  /user/$idUser/preferences
+ * updateAllUserPreferences($idUser, $params)  /user/$idUser/preferences
  *
  * CHANNEL METHODS:
  * getChannel($idChannel)  /channel/$idChannel
@@ -64,7 +65,7 @@
  * updateTheme($idTheme, $params)  /theme/$idTheme
  * deleteTheme($idTheme)  /theme/$idTheme
  * getThemes($params)  /themes
- * getThemesByRange($range)  /themes/range/$range
+ * getThemesByRange($range, $params)  /themes/range/$range
  * getThemeByName($params)  /theme_name
  *
  * SUBJECT METHODS:
@@ -371,7 +372,7 @@ class PushApi_Client
      * Retrieves information about all registered users.
      * @return array  Response key => value array
      */
-    public function getUsers($params)
+    public function getUsers($params = [])
     {
         return $this->users(self::GET, $params);
     }
@@ -445,7 +446,7 @@ class PushApi_Client
      * Retrieves information about all registered channels.
      * @return array  Response key => value array
      */
-    public function getChannels($params)
+    public function getChannels($params = [])
     {
         return $this->channels(self::GET, $params);
     }
@@ -509,7 +510,7 @@ class PushApi_Client
      * Retrieves information about all registered themes.
      * @return array  Response key => value array
      */
-    public function getThemes($params)
+    public function getThemes($params = [])
     {
         return $this->themes(self::GET, $params);
     }
@@ -519,7 +520,7 @@ class PushApi_Client
      * @param  string  $range The range that a theme can have.
      * @return array  Response key => value array
      */
-    public function getThemesByRange($range, $params)
+    public function getThemesByRange($range, $params = [])
     {
         return $this->themesByRange(self::GET, $range, $params);
     }
@@ -583,7 +584,7 @@ class PushApi_Client
      * Retrieves information about all registered subjects.
      * @return array  Response key => value array
      */
-    public function getSubjects($params)
+    public function getSubjects($params = [])
     {
         return $this->subjects(self::GET, $params);
     }
@@ -695,6 +696,17 @@ class PushApi_Client
         return $this->preferences(self::GET, $idUser);
     }
 
+    /**
+     * Updates all preferences of the $idUser with the same value (even preferences of themes that has not been set yet).
+     * @param  integer  $idUser  User identification value.
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST method).
+     * @return array  Response key => value array
+     */
+    public function updateAllUserPreferences($idUser, $params)
+    {
+        return $this->preferences(self::PUT, $idUser, $params);
+    }
+
 
     //////////////////////////
     //      SEND CALL       //
@@ -704,7 +716,7 @@ class PushApi_Client
      * @param  array  $params  Array with the required params as keys (used with PUT && POST method).
      * @return array  Response key => value array
      */
-    public function sendNotification($params)
+    public function sendNotification($params = [])
     {
         return $this->send(self::POST, $params);
     }
@@ -1223,15 +1235,20 @@ class PushApi_Client
      * Prepares the API call given the different possibilities (depending on the $method).
      * @param  string  $method  HTTP method of the request.
      * @param  integer  $idUser  User identification value.
+     * @param  array  $params  Array with the required params as keys (used with PUT && POST method).
      * @return array  Response key => value array
      *
      * @throws Exception  If [Invalid @param $method set]
      * @throws Exception  If [There aren't required ids set]
      */
-    private function preferences($method, $idUser)
+    private function preferences($method, $idUser, $params = [])
     {
-        if ($method == self::POST || $method == self::PUT || $method == self::DELETE) {
+        if ($method == self::POST || $method == self::DELETE) {
             throw new Exception("Invalid call method", 1);
+        }
+
+        if ($method == self::PUT && empty($params)) {
+            throw new Exception("Trying to update data without params", 2);
         }
 
         if (!isset($idUser)) {
@@ -1241,7 +1258,7 @@ class PushApi_Client
         $url = "user/$idUser/preferences";
         $request = $this->getRequestManager();
         try {
-            return $request->sendRequest($method, $url);
+            return $request->sendRequest($method, $url, $params);
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), $e->getCode());
         }

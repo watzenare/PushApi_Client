@@ -82,19 +82,29 @@ class GuzzleRequestManager extends RequestManager
         // Making the request
         if ($this->getTransmission() == self::ASYNC) {
             $this->client->send($request)->then(function ($response) {
-                if ($response->getStatusCode() == self::HTTP_RESPONSE_OK) {
-                    return $response->json();
-                } else {
-                    throw new \Exception($response->getReasonPhrase(), $response->getStatusCode());
-                }
-            });
+                $this->responseChecker($response);
+            })
+            ;
         } else {
             $response = $this->client->send($request);
-            if ($response->getStatusCode() == self::HTTP_RESPONSE_OK) {
-                return $response->json();
-            } else {
-                throw new \Exception($response->getReasonPhrase(), $response->getStatusCode());
+            $this->responseChecker($response);
+        }
+    }
+
+    /**
+     * @param  Response $response  Guzzle customized response object.
+     * @return array Response key => value array
+     * @throws Exception If connection failed
+     */
+    private function responseChecker($response)
+    {
+        if ($response->getStatusCode() == self::HTTP_RESPONSE_OK) {
+            return $response->json();
+        } else {
+            if ($response->hasHeader('X-Status-Reason')) {
+                throw new \Exception($response->getHeader('X-Status-Reason'), $response->getStatusCode());
             }
+            throw new \Exception($response->getReasonPhrase(), $response->getStatusCode());
         }
     }
 }
