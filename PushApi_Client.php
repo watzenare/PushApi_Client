@@ -33,6 +33,7 @@
  * getUserDeviceByReference($idUser, $params)  /user/$idUser/device
  * getUserDevice($idUser, $idDevice)  /user/$idUser/device/$idDevice
  * deleteUserDevice($idUser, $idDevice)  /user/$idUser/device/$idDevice
+ * deleteUserDevicesByType($idUser, $type)  /user/$idUser/device/type/$type
  * getUsers($params)  /users
  * createUsers($params)  /users
  * getUserSmartphones($idUser)  /user/$idUser/smartphones
@@ -366,6 +367,17 @@ class PushApi_Client
     public function deleteUserDevice($idUser, $idDevice)
     {
         return $this->device(self::DELETE, $idUser, $idDevice);
+    }
+
+    /**
+     * Deletes an specific type of devices of the $idUser.
+     * @param  integer  $idUser  User identification value.
+     * @param  string  $type  Device type identification.
+     * @return array  Response key => value array
+     */
+    public function deleteUserDevicesByType($idUser, $type)
+    {
+        return $this->devicesByType(self::DELETE, $idUser, $type);
     }
 
     /**
@@ -799,6 +811,7 @@ class PushApi_Client
     }
 
     /**
+     * Prepares the API call given the different possibilities (depending on the $method).
      * @param  string  $method  HTTP method of the request.
      * @param  integer  $idUser  User identification value.
      * @param  integer|false $idDevice  Device identification value.
@@ -844,12 +857,40 @@ class PushApi_Client
      * Prepares the API call given the different possibilities (depending on the $method).
      * @param  string  $method  HTTP method of the request.
      * @param  integer  $idUser  User identification value.
+     * @param  string  $type  Device type identification value.
      * @return array  Response key => value array
      *
-     * @throws Exception  If [There aren't required ids set]
+     * @throws Exception  If [Method is invalid]
+     */
+    private function devicesByType($method, $idUser, $type)
+    {
+        if ($method == self::GET || $method == self::POST || $method == self::PUT) {
+            throw new Exception("Invalid call method", 1);
+        }
+
+        $url = "user/$idUser/device/type/$type";
+        $request = $this->getRequestManager();
+        try {
+            return $request->sendRequest($method, $url);
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage(), $e->getCode());
+        }
+    }
+
+    /**
+     * Prepares the API call given the different possibilities (depending on the $method).
+     * @param  string  $method  HTTP method of the request.
+     * @param  integer  $idUser  User identification value.
+     * @return array  Response key => value array
+     *
+     * @throws Exception  If [Method is invalid]
      */
     private function userSmartphones($method, $idUser)
     {
+        if ($method == self::POST || $method == self::PUT || $method == self::DELETE) {
+            throw new Exception("Invalid call method", 1);
+        }
+
         $url = "user/$idUser/smartphones";
         $request = $this->getRequestManager();
         try {
