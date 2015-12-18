@@ -40,10 +40,11 @@ class CurlRequestManager extends RequestManager
 
         if ($method == self::POST || $method == self::PUT) {
             array_push($headers, self::HEADER_CONTENT_TYPE . self::X_WWW_FORM_URLENCODED);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
         }
 
-        if (!empty($params)) {
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+        if (!empty($params) && $method == self::GET) {
+            $path .=  "?" . http_build_query($params);
         }
 
         curl_setopt($ch, CURLOPT_URL, $this->getBaseUrl() . $path);
