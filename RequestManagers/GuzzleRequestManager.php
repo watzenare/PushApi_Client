@@ -82,12 +82,12 @@ class GuzzleRequestManager extends RequestManager
         // Making the request
         if ($this->getTransmission() == self::ASYNC) {
             $this->client->send($request)->then(function ($response) {
-                $this->responseChecker($response);
+                return $this->responseChecker($response);
             })
             ;
         } else {
             $response = $this->client->send($request);
-            $this->responseChecker($response);
+            return $this->responseChecker($response);
         }
     }
 
