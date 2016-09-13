@@ -8,7 +8,7 @@ use \RequestManagers\IRequestManager;
  * @author Eloi Ballarà Madrid <eloi@tviso.com>
  * @license http://www.opensource.org/licenses/mit-license.php The MIT License
  *
- * Contains the basic attributes and functionalities implemented required by the RequestManager interface,
+ * Contains the basic attributes and methods implemented required by the RequestManager interface,
  * it means that every dedicated RequestManager will must only implement the send functionality that it is
  * the most important one.
  */
@@ -19,7 +19,7 @@ abstract class RequestManager implements IRequestManager
     ////////////////////////////////////////////////////////////
 
     /**
-     * Main calls that support the PushApi
+     * Main methods that support the PushApi.
      */
     const GET = "GET";
     const PUT = "PUT";
@@ -220,7 +220,7 @@ abstract class RequestManager implements IRequestManager
      * @param  array $params  Array with the required params as keys (used with PUT && POST method)
      * @return array Response key => value array
      *
-     * @throws Exception If connection failed
+     * @throws \Exception If connection failed
      */
     abstract public function sendRequest($method, $path, $params = []);
 }
