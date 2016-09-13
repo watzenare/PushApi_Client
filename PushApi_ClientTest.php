@@ -1,5 +1,6 @@
 <?php
 
+use \RequestManagers\RequestManager;
 use \RequestManagers\DummyRequestManager;
 
 /**
@@ -15,13 +16,8 @@ use \RequestManagers\DummyRequestManager;
 class PushApi_ClientTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * Main calls that support the PushApi
+     * Fake app and connection credentials to initialize the PushApi_Client and RequestManager
      */
-    const GET = "GET";
-    const PUT = "PUT";
-    const POST = "POST";
-    const DELETE = "DELETE";
-
     protected static $appId = 1;
     protected static $appName = "Test";
     protected static $appSecret = "secret_test";
@@ -30,30 +26,48 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
     protected static $requestManager;
     protected static $client;
 
+    /**
+     * Fake ids and data that could be sent through the Client
+     */
     protected static $id = 54;
+    protected static $idDevice = 21;
     protected static $idTheme = 65;
     protected static $idSubscription = 42;
     protected static $idRange = "unicast";
     protected static $key = "name";
     protected static $params = ["name" => "app_name_test"];
+    protected static $deviceType = "email";
 
+    /**
+     * Previous initialization of the RequestManager and the Client before each test
+     */
     public static function setUpBeforeClass()
     {
         self::$requestManager = new DummyRequestManager(self::$baseUrl, self::$port);
         self::$client = new PushApi_Client(self::$appId, self::$appName, self::$appSecret, self::$requestManager);
     }
 
+    /**
+     * Deleting all data generating by RequestManager or Client after each test
+     */
     public static function tearDownAfterClass()
     {
         self::$requestManager = NULL;
         self::$client = NULL;
     }
 
+    /**
+     * Generating the authentication token
+     * @return string
+     */
     private static function getAuth()
     {
         return md5(self::$appName . date('Y-m-d') . self::$appSecret);
     }
 
+    /**
+     * Checking that the Client configuration has been done correctly
+     */
     public function testClientConstructor()
     {
         $this->assertEquals(self::$appId, self::$client->getAppId());
@@ -62,6 +76,9 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(self::getAuth(), self::$client->getAppAuth());
     }
 
+    /**
+     * Checking that the RequestManager configuration has been done correctly
+     */
     public function testRequestManagerConstructor()
     {
         $this->assertEquals(self::$baseUrl, self::$requestManager->getBaseUrl());
@@ -69,6 +86,10 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(self::$appId, self::$requestManager->getAppId());
         $this->assertEquals(self::getAuth(), self::$requestManager->getAppAuth());
     }
+
+    //////////////////////////
+    //      APP CALLS       //
+    //////////////////////////
 
     public function testGetAppRequest()
     {
@@ -93,9 +114,21 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
      */
     public function testAppForceException()
     {
-        // Receive an exception
         $params['exception'] = true;
-        $user = self::$client->updateApp(self::$id, $params);
+        // Response should be an exception in order th pass the test
+        self::$client->updateApp(self::$id, $params);
+    }
+
+    ///////////////////////////
+    //      USER CALLS       //
+    ///////////////////////////
+
+    public function testGetUserRequests()
+    {
+        $url = "user/" . self::$id;
+
+        $result = self::$client->getUser(self::$id);
+        $this->assertGetRequest($result, $url);
     }
 
     public function testCreateUserRequests()
@@ -106,22 +139,6 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
         $this->assertPostRequest($result, $url, self::$key);
     }
 
-    public function testGetUserRequests()
-    {
-        $url = "user/" . self::$id;
-
-        $result = self::$client->getUser(self::$id);
-        $this->assertGetRequest($result, $url);
-    }
-
-    public function testUpdateUserRequests()
-    {
-        $url = "user/" . self::$id;
-
-        $result = self::$client->updateUser(self::$id, self::$params);
-        $this->assertPutRequest($result, $url, self::$key);
-    }
-
     public function testDeleteUserRequests()
     {
         $url = "user/" . self::$id;
@@ -130,12 +147,44 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
         $this->assertDeleteRequest($result, $url);
     }
 
-    public function testGetUserSmartphonesRequests()
+    public function testAddUserDevice()
     {
-        $url = "user/" . self::$id . "/smartphones";
+        $url = "user/" . self::$id . "/device";
 
-        $result = self::$client->getUserSmartphones(self::$id);
+        $result = self::$client->addUserDevice(self::$id, self::$params);
+        $this->assertPostRequest($result, $url, self::$key);
+    }
+
+    public function testGetUserDeviceByReference()
+    {
+        $url = "user/" . self::$id . "/device";
+
+        $result = self::$client->getUserDeviceByReference(self::$id, self::$params);
+        $this->assertGetRequest($result, $url, self::$params);
+    }
+
+    public function testGetUserDevice()
+    {
+        $url = "user/" . self::$id . "/device/" . self::$idDevice;
+
+        $result = self::$client->getUserDevice(self::$id, self::$idDevice);
         $this->assertGetRequest($result, $url);
+    }
+
+    public function testDeleteUserDevice()
+    {
+        $url = "user/" . self::$id . "/device/" . self::$idDevice;
+
+        $result = self::$client->deleteUserDevice(self::$id, self::$idDevice);
+        $this->assertDeleteRequest($result, $url);
+    }
+
+    public function testDeleteUserDevicesByType()
+    {
+        $url = "user/" . self::$id . "/device/type/" . self::$deviceType;
+
+        $result = self::$client->deleteUserDevicesByType(self::$id, self::$deviceType);
+        $this->assertDeleteRequest($result, $url);
     }
 
     /**
@@ -145,9 +194,9 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
      */
     public function testUserForceException()
     {
-        // Receive an exception
         $params['exception'] = true;
-        $user = self::$client->createUser($params);
+        // Response should be an exception in order th pass the test
+        self::$client->createUser($params);
     }
 
     public function testCreateUsersRequests()
@@ -166,6 +215,14 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
         $this->assertGetRequest($result, $url);
     }
 
+    public function testGetUserSmartphones()
+    {
+        $url = "user/" . self::$id . "/smartphones";
+
+        $result = self::$client->getUserSmartphones(self::$id);
+        $this->assertGetRequest($result, $url);
+    }
+
     /**
      * @expectedException           Exception
      * @expectedExceptionMessage    I'm a Dummy Exception
@@ -173,10 +230,15 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
      */
     public function testUsersForceException()
     {
-        // Receive an exception
         $params['exception'] = true;
-        $user = self::$client->createUsers($params);
+        // Response should be an exception in order th pass the test
+        self::$client->createUsers($params);
     }
+
+
+    //////////////////////////////
+    //      CHANNEL CALLS       //
+    //////////////////////////////
 
     public function testCreateChannelRequests()
     {
@@ -225,9 +287,9 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
      */
     public function testChannelForceException()
     {
-        // Receive an exception
+        // Response should be an exception in order th pass the test
         $params['exception'] = true;
-        $channel = self::$client->createChannel($params);
+        self::$client->createChannel($params);
     }
 
     public function testChannelsRequest()
@@ -237,6 +299,10 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
         $result = self::$client->getChannels();
         $this->assertGetRequest($result, $url);
     }
+
+    ////////////////////////////
+    //      THEME CALLS       //
+    ////////////////////////////
 
     public function testCreateThemeRequests()
     {
@@ -307,6 +373,10 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
         $this->assertGetRequest($result, $url);
     }
 
+    /////////////////////////////////
+    //      PREFERENCE CALLS       //
+    /////////////////////////////////
+
     public function testCreateUserPreferenceRequests()
     {
         $url = "user/" . self::$id . "/preference/" . self::$idTheme;
@@ -346,9 +416,9 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
      */
     public function testUserPreferenceForceException()
     {
-        // Receive an exception
         $params['exception'] = true;
-        $user = self::$client->updateUserPreference(self::$id, self::$idTheme, $params);
+        // Response should be an exception in order th pass the test
+        self::$client->updateUserPreference(self::$id, self::$idTheme, $params);
     }
 
     public function testUserPreferencesRequest()
@@ -359,6 +429,18 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
         $result = self::$client->getUserPreferences(self::$id);
         $this->assertGetRequest($result, $url);
     }
+
+    public function testUserUpdateAllPreferencesRequest()
+    {
+        $url = "user/" . self::$id . "/preferences";
+
+        $result = self::$client->updateAllUserPreferences(self::$id, self::$params);
+        $this->assertPutRequest($result, $url, self::$key);
+    }
+
+    ///////////////////////////////////
+    //      SUBSCRIPTION CALLS       //
+    ///////////////////////////////////
 
     public function testCreateUserSubscriptionRequests()
     {
@@ -391,6 +473,10 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
         $result = self::$client->getUserSubscriptions(self::$id);
         $this->assertGetRequest($result, $url);
     }
+
+    //////////////////////////////
+    //      SUBJECT CALLS       //
+    //////////////////////////////
 
     public function testCreateSubjectRequests()
     {
@@ -431,9 +517,9 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
      */
     public function testSubjectForceException()
     {
-        // Receive an exception
         $params['exception'] = true;
-        $subject = self::$client->createSubject($params);
+        // Response should be an exception in order th pass the test
+        self::$client->createSubject($params);
     }
 
     public function testSubjectsRequest()
@@ -443,6 +529,10 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
         $result = self::$client->getSubjects();
         $this->assertGetRequest($result, $url);
     }
+
+    //////////////////////////
+    //      SEND CALL       //
+    //////////////////////////
 
     public function testSendRequest()
     {
@@ -460,40 +550,40 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
      */
     public function testSendForceException()
     {
-        // Receive an exception
         $params['exception'] = true;
-        $send = self::$client->sendNotification($params);
+        // Response should be an exception in order th pass the test
+        self::$client->sendNotification($params);
     }
 
-    private function assertGetRequest($result, $url)
-    {
-        $this->assertTrue(isset($result["result"]));
-        $this->assertEquals(self::GET, $result["result"]["method"]);
-        $this->assertEquals((self::$baseUrl . $url), $result["result"]["path"]);
-        $this->assertTrue(empty($result["result"]["params"]));
-    }
+    /////////////////////////////
+    //      ASSERTS CALL       //
+    /////////////////////////////
 
-    private function assertDeleteRequest($result, $url)
-    {
-        $this->assertTrue(isset($result["result"]));
-        $this->assertEquals(self::DELETE, $result["result"]["method"]);
-        $this->assertEquals((self::$baseUrl . $url), $result["result"]["path"]);
-        $this->assertTrue(empty($result["result"]["params"]));
-    }
+    /**
+     * Each request type has its own asserts methods because there are differences between each call type and its better
+     * to check them separately.
+     * @param $result array The output that should be sent to the PushApi after client manipulations (method, path, params, ...)
+     * @param $url string The final URL that should be used to send the request
+     * @param null $key string If it is set it means that the output result should contain parameters and it is checked
+     *                          the key of one parameter to validate if there are the same ones.
+     */
 
-    private function assertPutRequest($result, $url, $key)
+    private function assertGetRequest($result, $url, $key = null)
     {
         $this->assertTrue(isset($result["result"]));
-        $this->assertEquals(self::PUT, $result["result"]["method"]);
+        $this->assertEquals(RequestManager::GET, $result["result"]["method"]);
         $this->assertEquals((self::$baseUrl . $url), $result["result"]["path"]);
-        $this->assertTrue(!empty($result["result"]["params"]));
-        $this->assertArrayHasKey($key, $result["result"]["params"]);
+        if (isset($key)) {
+            $this->assertTrue(!empty($result["result"]["params"]));
+        } else {
+            $this->assertTrue(empty($result["result"]["params"]));
+        }
     }
 
     private function assertPostRequest($result, $url, $key = null)
     {
         $this->assertTrue(isset($result["result"]));
-        $this->assertEquals(self::POST, $result["result"]["method"]);
+        $this->assertEquals(RequestManager::POST, $result["result"]["method"]);
         $this->assertEquals((self::$baseUrl . $url), $result["result"]["path"]);
         if (isset($key)) {
             $this->assertTrue(!empty($result["result"]["params"]));
@@ -503,10 +593,27 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
         }
     }
 
+    private function assertPutRequest($result, $url, $key)
+    {
+        $this->assertTrue(isset($result["result"]));
+        $this->assertEquals(RequestManager::PUT, $result["result"]["method"]);
+        $this->assertEquals((self::$baseUrl . $url), $result["result"]["path"]);
+        $this->assertTrue(!empty($result["result"]["params"]));
+        $this->assertArrayHasKey($key, $result["result"]["params"]);
+    }
+
+    private function assertDeleteRequest($result, $url)
+    {
+        $this->assertTrue(isset($result["result"]));
+        $this->assertEquals(RequestManager::DELETE, $result["result"]["method"]);
+        $this->assertEquals((self::$baseUrl . $url), $result["result"]["path"]);
+        $this->assertTrue(empty($result["result"]["params"]));
+    }
+
     private function assertGetNameRequest($result, $url, $params)
     {
         $this->assertTrue(isset($result["result"]));
-        $this->assertEquals(self::GET, $result["result"]["method"]);
+        $this->assertEquals(RequestManager::GET, $result["result"]["method"]);
         $this->assertEquals((self::$baseUrl . $url . "?" . http_build_query($params)), $result["result"]["path"]);
     }
 }

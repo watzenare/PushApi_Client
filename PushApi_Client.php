@@ -1,22 +1,23 @@
 <?php
 
+use \RequestManagers\RequestManager;
+
 /**
  * PushApi_Client
  * Recommended to have:
- *     - basic knowledge about what the API does
- *     - what are the API functionalities
- *     - what params are required for each API call
+ *     - basic knowledge about what the API does and its methods
+ *     - required params for each API call
  *
  * This is only a library that sends commands to the PushApi, the API must be running in a server
  * (the API project is here https://github.com/watzenare/PushApi).
  *
- * The Client can use all functionalities of the API less deleting an app or list all the registered apps.
+ * The Client can use all methods of the API less deleting an app or list all the registered apps.
  *
  * @author Eloi Ballarà Madrid <eloi@tviso.com>
  * @license http://www.opensource.org/licenses/mit-license.php The MIT License
  *
  *
- * A PHP standalone client that facilitates to developers the use of all the PushApi functionalities.
+ * A PHP standalone client that facilitates to developers the use of all the PushApi methods.
  *
  * Warning: when a call need @param $params, this params must be send in an array and each key name must
  * be the expected request param that the API expects.
@@ -81,14 +82,6 @@
  */
 class PushApi_Client
 {
-    /**
-     * Main methods that support the PushApi.
-     */
-    const GET = "GET";
-    const PUT = "PUT";
-    const POST = "POST";
-    const DELETE = "DELETE";
-
     /**
      * Agent app identification.
      * @var integer
@@ -277,7 +270,7 @@ class PushApi_Client
      */
     public function getApp($idApp)
     {
-        return $this->app(self::GET, $idApp);
+        return $this->app(RequestManager::GET, $idApp);
     }
 
     /**
@@ -288,7 +281,7 @@ class PushApi_Client
      */
     public function updateApp($idApp, $params)
     {
-        return $this->app(self::PUT, $idApp, $params);
+        return $this->app(RequestManager::PUT, $idApp, $params);
     }
 
 
@@ -302,7 +295,7 @@ class PushApi_Client
      */
     public function getUser($idUser)
     {
-        return $this->user(self::GET, $idUser);
+        return $this->user(RequestManager::GET, $idUser);
     }
 
     /**
@@ -312,7 +305,7 @@ class PushApi_Client
      */
     public function createUser($params)
     {
-        return $this->user(self::POST, 0, $params);
+        return $this->user(RequestManager::POST, 0, $params);
     }
 
     /**
@@ -322,7 +315,7 @@ class PushApi_Client
      */
     public function deleteUser($idUser)
     {
-        return $this->user(self::DELETE, $idUser);
+        return $this->user(RequestManager::DELETE, $idUser);
     }
 
     /**
@@ -333,7 +326,7 @@ class PushApi_Client
      */
     public function addUserDevice($idUser, $params)
     {
-        return $this->device(self::POST, $idUser, false, $params);
+        return $this->device(RequestManager::POST, $idUser, false, $params);
     }
 
     /**
@@ -344,7 +337,7 @@ class PushApi_Client
      */
     public function getUserDeviceByReference($idUser, $params)
     {
-        return $this->device(self::GET, $idUser, false, $params);
+        return $this->device(RequestManager::GET, $idUser, false, $params);
     }
 
     /**
@@ -355,7 +348,7 @@ class PushApi_Client
      */
     public function getUserDevice($idUser, $idDevice)
     {
-        return $this->device(self::GET, $idUser, $idDevice);
+        return $this->device(RequestManager::GET, $idUser, $idDevice);
     }
 
     /**
@@ -366,7 +359,7 @@ class PushApi_Client
      */
     public function deleteUserDevice($idUser, $idDevice)
     {
-        return $this->device(self::DELETE, $idUser, $idDevice);
+        return $this->device(RequestManager::DELETE, $idUser, $idDevice);
     }
 
     /**
@@ -377,7 +370,7 @@ class PushApi_Client
      */
     public function deleteUserDevicesByType($idUser, $type)
     {
-        return $this->devicesByType(self::DELETE, $idUser, $type);
+        return $this->devicesByType(RequestManager::DELETE, $idUser, $type);
     }
 
     /**
@@ -386,7 +379,7 @@ class PushApi_Client
      */
     public function getUsers($params = [])
     {
-        return $this->users(self::GET, $params);
+        return $this->users(RequestManager::GET, $params);
     }
 
     /**
@@ -396,7 +389,7 @@ class PushApi_Client
      */
     public function createUsers($params)
     {
-        return $this->users(self::POST, $params);
+        return $this->users(RequestManager::POST, $params);
     }
 
     /**
@@ -406,7 +399,7 @@ class PushApi_Client
      */
     public function getUserSmartphones($idUser)
     {
-        return $this->userSmartphones(self::GET, $idUser);
+        return $this->userSmartphones(RequestManager::GET, $idUser);
     }
 
 
@@ -420,7 +413,7 @@ class PushApi_Client
      */
     public function getChannel($idChannel)
     {
-        return $this->channel(self::GET, $idChannel);
+        return $this->channel(RequestManager::GET, $idChannel);
     }
 
     /**
@@ -430,7 +423,7 @@ class PushApi_Client
      */
     public function createChannel($params)
     {
-        return $this->channel(self::POST, 0, $params);
+        return $this->channel(RequestManager::POST, 0, $params);
     }
 
     /**
@@ -441,7 +434,7 @@ class PushApi_Client
      */
     public function updateChannel($idChannel, $params)
     {
-        return $this->channel(self::PUT, $idChannel, $params);
+        return $this->channel(RequestManager::PUT, $idChannel, $params);
     }
 
     /**
@@ -451,7 +444,7 @@ class PushApi_Client
      */
     public function deleteChannel($idChannel)
     {
-        return $this->channel(self::DELETE, $idChannel);
+        return $this->channel(RequestManager::DELETE, $idChannel);
     }
 
     /**
@@ -460,7 +453,7 @@ class PushApi_Client
      */
     public function getChannels($params = [])
     {
-        return $this->channels(self::GET, $params);
+        return $this->channels(RequestManager::GET, $params);
     }
 
     /**
@@ -470,7 +463,7 @@ class PushApi_Client
      */
     public function getChannelByName($params)
     {
-        return $this->channelByName(self::GET, $params);
+        return $this->channelByName(RequestManager::GET, $params);
     }
 
 
@@ -484,7 +477,7 @@ class PushApi_Client
      */
     public function getTheme($idTheme)
     {
-        return $this->theme(self::GET, $idTheme);
+        return $this->theme(RequestManager::GET, $idTheme);
     }
 
     /**
@@ -494,7 +487,7 @@ class PushApi_Client
      */
     public function createTheme($params)
     {
-        return $this->theme(self::POST, 0, $params);
+        return $this->theme(RequestManager::POST, 0, $params);
     }
 
     /**
@@ -505,7 +498,7 @@ class PushApi_Client
      */
     public function updateTheme($idTheme, $params)
     {
-        return $this->theme(self::PUT, $idTheme, $params);
+        return $this->theme(RequestManager::PUT, $idTheme, $params);
     }
 
     /**
@@ -515,7 +508,7 @@ class PushApi_Client
      */
     public function deleteTheme($idTheme)
     {
-        return $this->theme(self::DELETE, $idTheme);
+        return $this->theme(RequestManager::DELETE, $idTheme);
     }
 
     /**
@@ -524,7 +517,7 @@ class PushApi_Client
      */
     public function getThemes($params = [])
     {
-        return $this->themes(self::GET, $params);
+        return $this->themes(RequestManager::GET, $params);
     }
 
     /**
@@ -534,7 +527,7 @@ class PushApi_Client
      */
     public function getThemesByRange($range, $params = [])
     {
-        return $this->themesByRange(self::GET, $range, $params);
+        return $this->themesByRange(RequestManager::GET, $range, $params);
     }
 
     /**
@@ -544,7 +537,7 @@ class PushApi_Client
      */
     public function getThemeByName($params)
     {
-        return $this->themeByName(self::GET, $params);
+        return $this->themeByName(RequestManager::GET, $params);
     }
 
 
@@ -558,7 +551,7 @@ class PushApi_Client
      */
     public function getSubject($idSubject)
     {
-        return $this->subject(self::GET, $idSubject);
+        return $this->subject(RequestManager::GET, $idSubject);
     }
 
     /**
@@ -568,7 +561,7 @@ class PushApi_Client
      */
     public function createSubject($params)
     {
-        return $this->subject(self::POST, 0, $params);
+        return $this->subject(RequestManager::POST, 0, $params);
     }
 
     /**
@@ -579,7 +572,7 @@ class PushApi_Client
      */
     public function updateSubject($idSubject, $params)
     {
-        return $this->subject(self::PUT, $idSubject, $params);
+        return $this->subject(RequestManager::PUT, $idSubject, $params);
     }
 
     /**
@@ -589,7 +582,7 @@ class PushApi_Client
      */
     public function deleteSubject($idSubject)
     {
-        return $this->subject(self::DELETE, $idSubject);
+        return $this->subject(RequestManager::DELETE, $idSubject);
     }
 
     /**
@@ -598,7 +591,7 @@ class PushApi_Client
      */
     public function getSubjects($params = [])
     {
-        return $this->subjects(self::GET, $params);
+        return $this->subjects(RequestManager::GET, $params);
     }
 
 
@@ -613,7 +606,7 @@ class PushApi_Client
      */
     public function getUserSubscription($idUser, $idChannel)
     {
-        return $this->subscription(self::GET, $idUser, $idChannel);
+        return $this->subscription(RequestManager::GET, $idUser, $idChannel);
     }
 
     /**
@@ -624,7 +617,7 @@ class PushApi_Client
      */
     public function createUserSubscription($idUser, $idChannel)
     {
-        return $this->subscription(self::POST, $idUser, $idChannel);
+        return $this->subscription(RequestManager::POST, $idUser, $idChannel);
     }
 
     /**
@@ -635,7 +628,7 @@ class PushApi_Client
      */
     public function deleteUserSubscription($idUser, $idChannel)
     {
-        return $this->subscription(self::DELETE, $idUser, $idChannel);
+        return $this->subscription(RequestManager::DELETE, $idUser, $idChannel);
     }
 
     /**
@@ -645,7 +638,7 @@ class PushApi_Client
      */
     public function getUserSubscriptions($idUser)
     {
-        return $this->subscriptions(self::GET, $idUser);
+        return $this->subscriptions(RequestManager::GET, $idUser);
     }
 
 
@@ -660,7 +653,7 @@ class PushApi_Client
      */
     public function getUserPreference($idUser, $idTheme)
     {
-        return $this->preference(self::GET, $idUser, $idTheme);
+        return $this->preference(RequestManager::GET, $idUser, $idTheme);
     }
 
     /**
@@ -672,7 +665,7 @@ class PushApi_Client
      */
     public function createUserPreference($idUser, $idTheme, $params)
     {
-        return $this->preference(self::POST, $idUser, $idTheme, $params);
+        return $this->preference(RequestManager::POST, $idUser, $idTheme, $params);
     }
 
     /**
@@ -684,7 +677,7 @@ class PushApi_Client
      */
     public function updateUserPreference($idUser, $idTheme, $params)
     {
-        return $this->preference(self::PUT, $idUser, $idTheme, $params);
+        return $this->preference(RequestManager::PUT, $idUser, $idTheme, $params);
     }
 
     /**
@@ -695,7 +688,7 @@ class PushApi_Client
      */
     public function deleteUserPreference($idUser, $idTheme)
     {
-        return $this->preference(self::DELETE, $idUser, $idTheme);
+        return $this->preference(RequestManager::DELETE, $idUser, $idTheme);
     }
 
     /**
@@ -705,7 +698,7 @@ class PushApi_Client
      */
     public function getUserPreferences($idUser)
     {
-        return $this->preferences(self::GET, $idUser);
+        return $this->preferences(RequestManager::GET, $idUser);
     }
 
     /**
@@ -716,7 +709,7 @@ class PushApi_Client
      */
     public function updateAllUserPreferences($idUser, $params)
     {
-        return $this->preferences(self::PUT, $idUser, $params);
+        return $this->preferences(RequestManager::PUT, $idUser, $params);
     }
 
 
@@ -730,7 +723,7 @@ class PushApi_Client
      */
     public function sendNotification($params = [])
     {
-        return $this->send(self::POST, $params);
+        return $this->send(RequestManager::POST, $params);
     }
 
 
@@ -754,11 +747,11 @@ class PushApi_Client
      */
     private function app($method, $idApp, $params = [])
     {
-        if ($method == self::POST || $method == self::DELETE) {
+        if ($method == RequestManager::POST || $method == RequestManager::DELETE) {
             throw new Exception("Invalid call method", 1);
         }
 
-        if ($method == self::PUT && empty($params)) {
+        if ($method == RequestManager::PUT && empty($params)) {
             throw new Exception("Trying to add data without params", 2);
         }
 
@@ -790,18 +783,18 @@ class PushApi_Client
      */
     private function user($method, $idUser, $params = [])
     {
-        if (($method == self::POST) && empty($params)) {
+        if (($method == RequestManager::POST) && empty($params)) {
             throw new Exception("Trying to add data without params", 2);
         }
 
-        if ($method != self::POST && !isset($idUser)) {
+        if ($method != RequestManager::POST && !isset($idUser)) {
             throw new Exception("Url can't be created, expecting referrer id", 3);
         }
 
         $url = "user";
         $request = $this->getRequestManager();
         try {
-            if ($method != self::POST) {
+            if ($method != RequestManager::POST) {
                 $url .= "/$idUser";
             }
             return $request->sendRequest($method, $url, $params);
@@ -825,7 +818,7 @@ class PushApi_Client
      */
     private function device($method, $idUser, $idDevice = false, $params = [])
     {
-        if (($method == self::POST) && empty($params)) {
+        if (($method == RequestManager::POST) && empty($params)) {
             throw new Exception("Trying to add data without params", 2);
         }
 
@@ -833,18 +826,18 @@ class PushApi_Client
             throw new Exception("Url can't be created, expecting user referrer id", 3);
         }
 
-        if (($method == self::GET && $idDevice == false) && empty($params)) {
+        if (($method == RequestManager::GET && $idDevice == false) && empty($params)) {
             throw new Exception("Search cannot be done without params", 4);
         }
 
-        if ($method == self::DELETE && $idDevice == false) {
+        if ($method == RequestManager::DELETE && $idDevice == false) {
             throw new Exception("Url can't be created, expecting device referrer id", 3);
         }
 
         $url = "user/$idUser/device";
         $request = $this->getRequestManager();
         try {
-            if (($method == self::GET || $method == self::DELETE) && $idDevice) {
+            if (($method == RequestManager::GET || $method == RequestManager::DELETE) && $idDevice) {
                 $url .= "/$idDevice";
             }
             return $request->sendRequest($method, $url, $params);
@@ -864,7 +857,7 @@ class PushApi_Client
      */
     private function devicesByType($method, $idUser, $type)
     {
-        if ($method == self::GET || $method == self::POST || $method == self::PUT) {
+        if ($method == RequestManager::GET || $method == RequestManager::POST || $method == RequestManager::PUT) {
             throw new Exception("Invalid call method", 1);
         }
 
@@ -887,7 +880,7 @@ class PushApi_Client
      */
     private function userSmartphones($method, $idUser)
     {
-        if ($method == self::POST || $method == self::PUT || $method == self::DELETE) {
+        if ($method == RequestManager::POST || $method == RequestManager::PUT || $method == RequestManager::DELETE) {
             throw new Exception("Invalid call method", 1);
         }
 
@@ -913,11 +906,11 @@ class PushApi_Client
      */
     private function users($method, $params = [])
     {
-        if ($method == self::PUT || $method == self::DELETE) {
+        if ($method == RequestManager::PUT || $method == RequestManager::DELETE) {
             throw new Exception("Invalid call method", 1);
         }
 
-        if ($method == self::POST && empty($params)) {
+        if ($method == RequestManager::POST && empty($params)) {
             throw new Exception("Trying to add data without params", 2);
         }
 
@@ -944,18 +937,18 @@ class PushApi_Client
      */
     private function channel($method, $idChannel, $params = [])
     {
-        if (($method == self::POST || $method == self::PUT) && empty($params)) {
+        if (($method == RequestManager::POST || $method == RequestManager::PUT) && empty($params)) {
             throw new Exception("Trying to add data without params", 2);
         }
 
-        if ($method != self::POST && !isset($idChannel)) {
+        if ($method != RequestManager::POST && !isset($idChannel)) {
             throw new Exception("Url can't be created, expecting referrer id", 3);
         }
 
         $url = "channel";
         $request = $this->getRequestManager();
         try {
-            if ($method != self::POST) {
+            if ($method != RequestManager::POST) {
                 $url .= "/$idChannel";
             }
             return $request->sendRequest($method, $url, $params);
@@ -973,7 +966,7 @@ class PushApi_Client
      */
     private function channels($method, $params = [])
     {
-        if ($method == self::POST || $method == self::PUT || $method == self::DELETE) {
+        if ($method == RequestManager::POST || $method == RequestManager::PUT || $method == RequestManager::DELETE) {
             throw new Exception("Invalid call method", 1);
         }
 
@@ -997,7 +990,7 @@ class PushApi_Client
      */
     private function channelByName($method, $params = [])
     {
-        if ($method != self::GET) {
+        if ($method != RequestManager::GET) {
             throw new Exception("Invalid call method", 1);
         }
 
@@ -1028,18 +1021,18 @@ class PushApi_Client
      */
     private function theme($method, $idTheme, $params = [])
     {
-        if (($method == self::POST || $method == self::PUT) && empty($params)) {
+        if (($method == RequestManager::POST || $method == RequestManager::PUT) && empty($params)) {
             throw new Exception("Trying to add data without params", 2);
         }
 
-        if ($method != self::POST && !isset($idTheme)) {
+        if ($method != RequestManager::POST && !isset($idTheme)) {
             throw new Exception("Url can't be created, expecting referrer id", 3);
         }
 
         $url = "theme";
         $request = $this->getRequestManager();
         try {
-            if ($method != self::POST) {
+            if ($method != RequestManager::POST) {
                 $url .= "/$idTheme";
             }
             return $request->sendRequest($method, $url, $params);
@@ -1057,7 +1050,7 @@ class PushApi_Client
      */
     private function themes($method, $params = [])
     {
-        if ($method == self::POST || $method == self::PUT || $method == self::DELETE) {
+        if ($method == RequestManager::POST || $method == RequestManager::PUT || $method == RequestManager::DELETE) {
             throw new Exception("Invalid call method", 1);
         }
 
@@ -1081,7 +1074,7 @@ class PushApi_Client
      */
     private function themesByRange($method, $range, $params = [])
     {
-        if ($method == self::POST || $method == self::PUT || $method == self::DELETE) {
+        if ($method == RequestManager::POST || $method == RequestManager::PUT || $method == RequestManager::DELETE) {
             throw new Exception("Invalid call method", 1);
         }
 
@@ -1109,7 +1102,7 @@ class PushApi_Client
      */
     private function themeByName($method, $params = [])
     {
-        if ($method != self::GET) {
+        if ($method != RequestManager::GET) {
             throw new Exception("Invalid call method", 1);
         }
 
@@ -1140,18 +1133,18 @@ class PushApi_Client
      */
     private function subject($method, $idSubject, $params = [])
     {
-        if (($method == self::POST || $method == self::PUT) && empty($params)) {
+        if (($method == RequestManager::POST || $method == RequestManager::PUT) && empty($params)) {
             throw new Exception("Trying to add data without params", 2);
         }
 
-        if ($method != self::POST && !isset($idSubject)) {
+        if ($method != RequestManager::POST && !isset($idSubject)) {
             throw new Exception("Url can't be created, expecting referrer id", 3);
         }
 
         $url = "subject";
         $request = $this->getRequestManager();
         try {
-            if ($method != self::POST) {
+            if ($method != RequestManager::POST) {
                 $url .= "/$idSubject";
             }
             return $request->sendRequest($method, $url, $params);
@@ -1169,7 +1162,7 @@ class PushApi_Client
      */
     private function subjects($method, $params = [])
     {
-        if ($method == self::POST || $method == self::PUT || $method == self::DELETE) {
+        if ($method == RequestManager::POST || $method == RequestManager::PUT || $method == RequestManager::DELETE) {
             throw new Exception("Invalid call method", 1);
         }
 
@@ -1193,7 +1186,7 @@ class PushApi_Client
      */
     private function subscription($method, $idUser, $idChannel)
     {
-        if ($method == self::PUT) {
+        if ($method == RequestManager::PUT) {
             throw new Exception("Invalid call method", 1);
         }
 
@@ -1204,7 +1197,7 @@ class PushApi_Client
         $url = "user/$idUser/subscribe/$idChannel";
         $request = $this->getRequestManager();
         try {
-            if ($method != self::POST) {
+            if ($method != RequestManager::POST) {
                 $url = "user/$idUser/subscribed/$idChannel";
             }
             return $request->sendRequest($method, $url);
@@ -1223,7 +1216,7 @@ class PushApi_Client
      */
     private function subscriptions($method, $idUser)
     {
-        if ($method == self::POST || $method == self::PUT || $method == self::DELETE) {
+        if ($method == RequestManager::POST || $method == RequestManager::PUT || $method == RequestManager::DELETE) {
             throw new Exception("Invalid call method", 1);
         }
 
@@ -1255,7 +1248,7 @@ class PushApi_Client
      */
     private function preference($method, $idUser, $idTheme, $params = [])
     {
-        if (($method == self::POST || $method == self::PUT) && empty($params)) {
+        if (($method == RequestManager::POST || $method == RequestManager::PUT) && empty($params)) {
             throw new Exception("Trying to add data without params", 2);
         }
 
@@ -1284,11 +1277,11 @@ class PushApi_Client
      */
     private function preferences($method, $idUser, $params = [])
     {
-        if ($method == self::POST || $method == self::DELETE) {
+        if ($method == RequestManager::POST || $method == RequestManager::DELETE) {
             throw new Exception("Invalid call method", 1);
         }
 
-        if ($method == self::PUT && empty($params)) {
+        if ($method == RequestManager::PUT && empty($params)) {
             throw new Exception("Trying to update data without params", 2);
         }
 
@@ -1318,7 +1311,7 @@ class PushApi_Client
      */
     private function send($method, $params)
     {
-        if ($method == self::GET || $method == self::PUT || $method == self::DELETE) {
+        if ($method == RequestManager::GET || $method == RequestManager::PUT || $method == RequestManager::DELETE) {
             throw new Exception("Invalid call method", 1);
         }
 
