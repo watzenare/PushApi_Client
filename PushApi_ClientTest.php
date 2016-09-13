@@ -287,9 +287,9 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
      */
     public function testChannelForceException()
     {
-        // Receive an exception
+        // Response should be an exception in order th pass the test
         $params['exception'] = true;
-        $channel = self::$client->createChannel($params);
+        self::$client->createChannel($params);
     }
 
     public function testChannelsRequest()
@@ -416,9 +416,9 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
      */
     public function testUserPreferenceForceException()
     {
-        // Receive an exception
         $params['exception'] = true;
-        $user = self::$client->updateUserPreference(self::$id, self::$idTheme, $params);
+        // Response should be an exception in order th pass the test
+        self::$client->updateUserPreference(self::$id, self::$idTheme, $params);
     }
 
     public function testUserPreferencesRequest()
@@ -428,6 +428,14 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
         // Get themes
         $result = self::$client->getUserPreferences(self::$id);
         $this->assertGetRequest($result, $url);
+    }
+
+    public function testUserUpdateAllPreferencesRequest()
+    {
+        $url = "user/" . self::$id . "/preferences";
+
+        $result = self::$client->updateAllUserPreferences(self::$id, self::$params);
+        $this->assertPutRequest($result, $url, self::$key);
     }
 
     ///////////////////////////////////
@@ -509,9 +517,9 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
      */
     public function testSubjectForceException()
     {
-        // Receive an exception
         $params['exception'] = true;
-        $subject = self::$client->createSubject($params);
+        // Response should be an exception in order th pass the test
+        self::$client->createSubject($params);
     }
 
     public function testSubjectsRequest()
@@ -542,10 +550,23 @@ class PushApi_ClientTest extends PHPUnit_Framework_TestCase
      */
     public function testSendForceException()
     {
-        // Receive an exception
         $params['exception'] = true;
-        $send = self::$client->sendNotification($params);
+        // Response should be an exception in order th pass the test
+        self::$client->sendNotification($params);
     }
+
+    /////////////////////////////
+    //      ASSERTS CALL       //
+    /////////////////////////////
+
+    /**
+     * Each request type has its own asserts methods because there are differences between each call type and its better
+     * to check them separately.
+     * @param $result array The output that should be sent to the PushApi after client manipulations (method, path, params, ...)
+     * @param $url string The final URL that should be used to send the request
+     * @param null $key string If it is set it means that the output result should contain parameters and it is checked
+     *                          the key of one parameter to validate if there are the same ones.
+     */
 
     private function assertGetRequest($result, $url, $key = null)
     {
