@@ -1,5 +1,6 @@
 # PushApi_Client
 
+[![Build Status](https://travis-ci.org/watzenare/PushApi_Client.svg?branch=master)](https://travis-ci.org/watzenare/PushApi_Client)
 [![Latest Stable Version](https://poser.pugx.org/pushapi/client-php/v/stable.svg)](https://packagist.org/packages/pushapi/client-php)
 [![License](https://poser.pugx.org/pushapi/client-php/license.svg)](https://packagist.org/packages/pushapi/client-php)
 
