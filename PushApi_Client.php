@@ -275,7 +275,7 @@ class PushApi_Client
 
     /**
      * Updates the information of the specific $idApp.
-     * @param  integer  idApp  App identification
+     * @param  integer  $idApp  App identification
      * @param  array  $params  Array with the required params as keys (used with PUT && POST method)
      * @return array  Response key => value array
      */
